@@ -1,5 +1,7 @@
 import React from 'react';
-import {StyleSheet, Text, View, Image} from 'react-native';
+import {StyleSheet, View, Image} from 'react-native';
+import Icon from 'react-native-vector-icons/Foundation';
+import {Colors} from './ColourSheet';
 class TopBar extends React.Component {
   render() {
     return (
@@ -8,7 +10,7 @@ class TopBar extends React.Component {
           style={styles.logoStyle}
           source={require('../img/HH_logo.png')}
         />
-        <Text>Right</Text>
+        <Icon name="list" size={30} color={Colors.light} />
       </View>
     );
   }
@@ -18,11 +20,10 @@ const styles = StyleSheet.create({
     alignSelf: 'stretch',
     height: 100,
     flexDirection: 'row', // row
-    backgroundColor: '#0a0a0a',
+    backgroundColor: Colors.dark,
     alignItems: 'center',
     justifyContent: 'space-between', // center, space-around
-    paddingLeft: 10,
-    paddingRight: 10,
+    margin: 10,
   },
   logoStyle: {
     width: 100,

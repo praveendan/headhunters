@@ -6,6 +6,7 @@ import {createSwitchNavigator, createAppContainer} from 'react-navigation';
 //import SignUp from './SignUp';
 import Login from './src/components/Login';
 import MemberHome from './src/components/MemberHome';
+import UpdatesList from './src/components/MemberUpdatesListView';
 //import Main from './Main';
 
 // const App: () => React$Node = () => {
@@ -21,11 +22,12 @@ export default createAppContainer(
       //  SignUp,
       Login,
       MemberHome,
+      UpdatesList,
       //  Main,
     },
     {
       // initialRouteName: 'Loading',
-      initialRouteName: 'MemberHome',
+      initialRouteName: 'UpdatesList',
     },
   ),
 );
