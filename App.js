@@ -7,6 +7,7 @@ import {createSwitchNavigator, createAppContainer} from 'react-navigation';
 import Login from './src/components/Login';
 import MemberHome from './src/components/MemberHome';
 import UpdatesList from './src/components/MemberUpdatesListView';
+import AdminHome from './src/components/AdminHome';
 //import Main from './Main';
 
 // const App: () => React$Node = () => {
@@ -23,11 +24,12 @@ export default createAppContainer(
       Login,
       MemberHome,
       UpdatesList,
+      AdminHome,
       //  Main,
     },
     {
-      // initialRouteName: 'Loading',
-      initialRouteName: 'UpdatesList',
+      // initialRouteName: 'Login',
+      initialRouteName: 'AdminHome',
     },
   ),
 );
