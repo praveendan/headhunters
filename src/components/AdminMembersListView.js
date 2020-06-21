@@ -6,6 +6,7 @@ import {
   StyleSheet,
   ScrollView,
   Modal,
+  Alert,
 } from 'react-native';
 import TopBar from './TopBar';
 import {Colors} from './ColourSheet';
@@ -17,72 +18,72 @@ class UpdatesList extends Component {
       {
         id: 0,
         name: 'Ben',
-        description: 'consectetur adipiscing elit',
+        key: 'xxxxxxxxxxxxxx',
       },
       {
         id: 1,
         name: 'Susan',
-        description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit',
+        key: 'xxxxxxxxxxxxxx',
       },
       {
         id: 2,
         name: 'Robert',
-        description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit',
+        key: 'xxxxxxxxxxxxxx',
       },
       {
         id: 3,
         name: 'Mary',
-        description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit',
+        key: 'xxxxxxxxxxxxxx',
       },
       {
         id: 4,
         name: 'Mary',
-        description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit',
+        key: 'xxxxxxxxxxxxxx',
       },
       {
         id: 5,
-        name: 'Mary',
-        description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit',
+        name: 'Loren',
+        key: 'xxxxxxxxxxxxxx',
       },
       {
         id: 6,
-        name: 'Mary',
-        description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit',
+        name: 'Json',
+        key: 'xxxxxxxxxxxxxx',
       },
       {
         id: 7,
-        name: 'Mary',
-        description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit',
-      },
-      {
-        id: 8,
-        name: 'Mary',
-        description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit',
-      },
-      {
-        id: 9,
-        name: 'Mary',
-        description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit',
-      },
-      {
-        id: 10,
-        name: 'Mary',
-        description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit',
+        name: 'Anaz',
+        key: 'Lxxxxxxxxxxxxxxt',
       },
     ],
     modalVisible: false,
-    modalText: 'dummy',
+    modalData: 'dummy',
   };
 
   showModal = (item) => {
-    this.setState({modalText: item.description});
+    this.setState({modalData: item});
     this.setModalVisible(true);
   };
   setModalVisible = (visible) => {
     this.setState({modalVisible: visible});
   };
+  createTwoButtonAlert = (username) =>
+    Alert.alert(
+      'Confirmation',
+      'Are you sure that you want to  remove ' + username + '?',
+      [
+        {
+          text: 'Cancel',
+          onPress: () => console.log('Cancel Pressed'),
+          style: 'cancel',
+        },
+        {text: 'OK', onPress: () => console.log('OK Pressed')},
+      ],
+      {cancelable: false},
+    );
+
   render() {
-    const {modalVisible, modalText} = this.state;
+    const {modalVisible, modalData} = this.state;
     return (
       <View style={styles.container}>
         <TopBar />
@@ -94,8 +95,8 @@ class UpdatesList extends Component {
               onPress={() => {
                 this.showModal(item);
               }}>
-              <Text style={styles.itemTitle}>{item.name}</Text>
-              <Text style={styles.itemExcerpt}>{item.description}</Text>
+              <Text style={styles.itemTitle}>User name: {item.name}</Text>
+              <Text style={styles.itemExcerpt}>Key: {item.key}</Text>
             </TouchableOpacity>
           ))}
         </ScrollView>
@@ -106,14 +107,45 @@ class UpdatesList extends Component {
           onRequestClose={() => {}}>
           <View style={ModalStyles.centeredView}>
             <View style={ModalStyles.modalView}>
-              <Text style={ModalStyles.modalText}>{modalText}</Text>
+              <Text style={ModalStyles.modalText}>
+                Member name: {modalData.name}
+              </Text>
+              <Text style={ModalStyles.modalText}>
+                Member key: {modalData.key}
+              </Text>
 
               <TouchableOpacity
-                style={{...ModalStyles.basicButton, backgroundColor: Colors.dark}}
+                style={{
+                  ...ModalStyles.basicButton,
+                  ...ModalStyles.closeButton,
+                  ...styles.modalButton,
+                  backgroundColor: Colors.dark,
+                }}
                 onPress={() => {
                   this.setModalVisible(!modalVisible);
                 }}>
                 <Text style={ModalStyles.textStyle}>Close</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={{
+                  ...ModalStyles.basicButton,
+                  ...styles.modalButton,
+                  backgroundColor: Colors.highlight,
+                }}
+                onPress={() => {
+                  this.createTwoButtonAlert(modalData.name);
+                }}>
+                <Text style={ModalStyles.textStyle}>Delete</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={{
+                  ...ModalStyles.basicButton,
+                  ...ModalStyles.openButton,
+                  ...styles.modalButton,
+                  backgroundColor: Colors.dark,
+                }}
+                onPress={() => {}}>
+                <Text style={ModalStyles.textStyle}>Save</Text>
               </TouchableOpacity>
             </View>
           </View>
@@ -146,5 +178,8 @@ const styles = StyleSheet.create({
   itemExcerpt: {
     fontSize: 20,
     color: Colors.dark,
+  },
+  modalButton: {
+    width: '30%',
   },
 });

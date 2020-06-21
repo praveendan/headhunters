@@ -4,6 +4,7 @@ import {StyleSheet, Text, View} from 'react-native';
 import TopBar from './TopBar';
 import {Colors} from './ColourSheet';
 import Icon from 'react-native-vector-icons/Foundation';
+import CommonStyles from './Common.style';
 
 export default class MemberHome extends React.Component {
   state = {userKey: '', errorMessage: null};
@@ -12,9 +13,9 @@ export default class MemberHome extends React.Component {
   };
   render() {
     return (
-      <View style={styles.container}>
+      <View style={CommonStyles.container}>
         <TopBar />
-        <View style={styles.viewContainer}>
+        <View style={CommonStyles.viewContainer}>
           <View style={styles.viewContainerItem}>
             <View style={styles.viewContainerItemMain}>
               <Text style={styles.viewContainerItemHeading}>EVENTS</Text>
@@ -53,13 +54,6 @@ export default class MemberHome extends React.Component {
   }
 }
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: Colors.dark,
-  },
-  viewContainer: {
-    flex: 1,
-  },
   viewContainerItem: {
     height: '50%',
     paddingLeft: 20,
