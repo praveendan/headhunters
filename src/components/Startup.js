@@ -4,26 +4,21 @@ import {
   Text,
   TextInput,
   View,
-  Image,
   TouchableOpacity,
 } from 'react-native';
-
 import {Colors} from './shared/ColourSheet';
 export default class Login extends React.Component {
-  state = {userKey: '', errorMessage: null};
-  handleLogin = () => {
+  state = {userId: '', userKey: '', errorMessage: null};
+  handleMagicWord = () => {
     //login
   };
   render() {
     return (
       <View style={styles.container}>
-        <Image
-          source={require('../img/HH_logo.png')}
-          style={styles.logoStyle}
-        />
         {this.state.errorMessage && (
           <Text style={Colors.highlight}>{this.state.errorMessage}</Text>
         )}
+        <Text style={styles.welcomeText}>Enter the Magic word</Text>
         <TextInput
           style={styles.textInput}
           autoCapitalize="none"
@@ -31,10 +26,11 @@ export default class Login extends React.Component {
           onChangeText={(userKey) => this.setState({userKey})}
           value={this.state.userKey}
         />
-        <TouchableOpacity style={styles.loginButton} onPress={this.handleLogin}>
-          <Text style={styles.loginButtonText}>LOGIN</Text>
+        <TouchableOpacity
+          style={styles.loginButton}
+          onPress={this.handleMagicWord}>
+          <Text style={styles.loginButtonText}>Enter.!</Text>
         </TouchableOpacity>
-        <Text style={styles.footerText}>HEAD-HUNTERS INTERCOM v1.1</Text>
       </View>
     );
   }
@@ -43,16 +39,20 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     alignItems: 'center',
-    backgroundColor: Colors.dark,
+    justifyContent: 'center',
+    backgroundColor: Colors.light,
+  },
+  welcomeText: {
+    fontSize: 20,
   },
   textInput: {
     height: 40,
     width: '70%',
-    borderColor: Colors.inputBorder,
+    borderColor: 'gray',
     borderRadius: 5,
     borderWidth: 1,
     marginTop: 8,
-    backgroundColor: Colors.inputBackground,
+    backgroundColor: Colors.gray,
   },
   loginButton: {
     height: 40,
@@ -67,16 +67,5 @@ const styles = StyleSheet.create({
     fontSize: 25,
     color: Colors.light,
     fontWeight: 'bold',
-  },
-  logoStyle: {
-    width: '70%',
-    height: '50%',
-    resizeMode: 'contain',
-  },
-  footerText: {
-    color: Colors.light,
-    position: 'absolute',
-    bottom: 0,
-    paddingBottom: 5,
   },
 });

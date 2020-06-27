@@ -7,10 +7,9 @@ import {
   Image,
   TouchableOpacity,
 } from 'react-native';
-
 import {Colors} from './shared/ColourSheet';
 export default class Login extends React.Component {
-  state = {userKey: '', errorMessage: null};
+  state = {userId: '', userKey: '', errorMessage: null};
   handleLogin = () => {
     //login
   };
@@ -27,12 +26,19 @@ export default class Login extends React.Component {
         <TextInput
           style={styles.textInput}
           autoCapitalize="none"
+          placeholder="User Id"
+          onChangeText={(userId) => this.setState({userId})}
+          value={this.state.userId}
+        />
+        <TextInput
+          style={styles.textInput}
+          autoCapitalize="none"
           placeholder="User Key"
           onChangeText={(userKey) => this.setState({userKey})}
           value={this.state.userKey}
         />
         <TouchableOpacity style={styles.loginButton} onPress={this.handleLogin}>
-          <Text style={styles.loginButtonText}>LOGIN</Text>
+          <Text style={styles.loginButtonText}>SETUP</Text>
         </TouchableOpacity>
         <Text style={styles.footerText}>HEAD-HUNTERS INTERCOM v1.1</Text>
       </View>

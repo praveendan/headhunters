@@ -1,10 +1,10 @@
 import React from 'react';
 import {StyleSheet, Text, View} from 'react-native';
 
-import TopBar from './TopBar';
-import {Colors} from './ColourSheet';
+import TopBar from '../shared/TopBar';
+import {Colors} from '../shared/ColourSheet';
 import Icon from 'react-native-vector-icons/Foundation';
-import CommonStyles from './Common.style';
+import CommonStyles from '../shared/Common.style';
 
 export default class MemberHome extends React.Component {
   state = {userKey: '', errorMessage: null};

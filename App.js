@@ -2,14 +2,16 @@ import React from 'react';
 
 import {createSwitchNavigator, createAppContainer} from 'react-navigation';
 
-//import Loading from './Loading';
+import Startup from './src/components/Startup';
+import Loading from './src/components/Loading';
 //import SignUp from './SignUp';
+import Setup from './src/components/Setup';
 import Login from './src/components/Login';
-import MemberHome from './src/components/MemberHome';
-import UpdatesList from './src/components/MemberUpdatesListView';
+import MemberHome from './src/components/member/MemberHome';
+import UpdatesList from './src/components/member/MemberUpdatesListView';
 
-import AdminHome from './src/components/AdminHome';
-import MembersList from './src/components/AdminMembersListView';
+import AdminHome from './src/components/supremeUser/AdminHome';
+import MembersList from './src/components/supremeUser/AdminMembersListView';
 //import Main from './Main';
 
 // const App: () => React$Node = () => {
@@ -21,8 +23,10 @@ import MembersList from './src/components/AdminMembersListView';
 export default createAppContainer(
   createSwitchNavigator(
     {
-      // Loading,
+      Startup,
+      Loading,
       //  SignUp,
+      Setup,
       Login,
       MemberHome,
       UpdatesList,
@@ -31,8 +35,8 @@ export default createAppContainer(
       //  Main,
     },
     {
-      // initialRouteName: 'Login',
-      initialRouteName: 'MembersList',
+      initialRouteName: 'Setup',
+      //initialRouteName: 'UpdatesList',
     },
   ),
 );

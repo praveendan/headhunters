@@ -44,6 +44,34 @@ export default {
   },
   modalText: {
     marginBottom: 15,
+    fontSize: 20,
     textAlign: 'center',
+  },
+  modalHeading: {
+    fontSize: 20,
+    margin: 10,
+    fontWeight: 'bold',
+  },
+  formInline: {
+    flexDirection: 'row',
+    borderBottomColor: Colors.gray,
+    borderTopColor: Colors.gray,
+    borderLeftColor: Colors.light,
+    borderRightColor: Colors.light,
+    padding: 5,
+    borderWidth: 1,
+    height: 60,
+  },
+  modalTitle: {
+    textAlign: 'left',
+    width: '40%',
+    fontSize: 20,
+    marginTop: 10,
+  },
+  modalTextInput: {
+    width: '60%',
+    textAlignVertical: 'top',
+    height: 50,
+    fontSize: 20,
   },
 };

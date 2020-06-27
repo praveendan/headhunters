@@ -7,9 +7,9 @@ import {
   ScrollView,
   Modal,
 } from 'react-native';
-import TopBar from './TopBar';
-import {Colors} from './ColourSheet';
-import ModalStyles from './Modal.style';
+import TopBar from '../shared/TopBar';
+import {Colors} from '../shared/ColourSheet';
+import ModalStyles from '../shared/Modal.style';
 
 class UpdatesList extends Component {
   state = {
@@ -17,56 +17,67 @@ class UpdatesList extends Component {
       {
         id: 0,
         name: 'Ben',
+        date: 'xx/xx/xxxx',
         description: 'consectetur adipiscing elit',
       },
       {
         id: 1,
         name: 'Susan',
+        date: 'xx/xx/xxxx',
         description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit',
       },
       {
         id: 2,
         name: 'Robert',
+        date: 'xx/xx/xxxx',
         description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit',
       },
       {
         id: 3,
         name: 'Mary',
+        date: 'xx/xx/xxxx',
         description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit',
       },
       {
         id: 4,
         name: 'Mary',
+        date: 'xx/xx/xxxx',
         description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit',
       },
       {
         id: 5,
         name: 'Mary',
+        date: 'xx/xx/xxxx',
         description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit',
       },
       {
         id: 6,
         name: 'Mary',
+        date: 'xx/xx/xxxx',
         description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit',
       },
       {
         id: 7,
         name: 'Mary',
+        date: 'xx/xx/xxxx',
         description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit',
       },
       {
         id: 8,
         name: 'Mary',
+        date: 'xx/xx/xxxx',
         description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit',
       },
       {
         id: 9,
         name: 'Mary',
+        date: 'xx/xx/xxxx',
         description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit',
       },
       {
         id: 10,
         name: 'Mary',
+        date: 'xx/xx/xxxx',
         description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit',
       },
     ],
@@ -75,7 +86,7 @@ class UpdatesList extends Component {
   };
 
   showModal = (item) => {
-    this.setState({modalText: item.description});
+    this.setState({modalText: item});
     this.setModalVisible(true);
   };
   setModalVisible = (visible) => {
@@ -95,7 +106,12 @@ class UpdatesList extends Component {
                 this.showModal(item);
               }}>
               <Text style={styles.itemTitle}>{item.name}</Text>
-              <Text style={styles.itemExcerpt}>{item.description}</Text>
+              <View style={styles.itemExcerpt}>
+                <Text style={styles.itemExcerptTextDate}>
+                  Date: {item.date}
+                </Text>
+                <Text style={styles.itemExcerptText}>{item.description}</Text>
+              </View>
             </TouchableOpacity>
           ))}
         </ScrollView>
@@ -106,10 +122,24 @@ class UpdatesList extends Component {
           onRequestClose={() => {}}>
           <View style={ModalStyles.centeredView}>
             <View style={ModalStyles.modalView}>
-              <Text style={ModalStyles.modalText}>{modalText}</Text>
+              <Text style={ModalStyles.modalHeading}>Details</Text>
+              <View style={ModalStyles.formInline}>
+                <Text style={ModalStyles.modalTitle}>Date :</Text>
+                <Text
+                  style={{
+                    ...ModalStyles.modalTextInput,
+                    ...styles.modalTextInput,
+                  }}>
+                  {modalText.date}
+                </Text>
+              </View>
+              <Text style={ModalStyles.modalText}>{modalText.description}</Text>
 
               <TouchableOpacity
-                style={{...ModalStyles.basicButton, backgroundColor: Colors.dark}}
+                style={{
+                  ...ModalStyles.basicButton,
+                  backgroundColor: Colors.dark,
+                }}
                 onPress={() => {
                   this.setModalVisible(!modalVisible);
                 }}>
@@ -143,8 +173,16 @@ const styles = StyleSheet.create({
     marginTop: -10,
     paddingLeft: 10,
   },
-  itemExcerpt: {
+  itemExcerpt: {},
+  itemExcerptTextDate: {
+    fontSize: 20,
+    fontWeight: 'bold',
+  },
+  itemExcerptText: {
     fontSize: 20,
     color: Colors.dark,
+  },
+  modalTextInput: {
+    marginTop: 10,
   },
 });

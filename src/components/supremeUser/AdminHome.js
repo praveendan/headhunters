@@ -7,11 +7,11 @@ import {
   Modal,
   TextInput,
 } from 'react-native';
-import TopBar from './TopBar';
-import {Colors} from './ColourSheet';
+import TopBar from '../shared/TopBar';
+import {Colors} from '../shared/ColourSheet';
 import Icon from 'react-native-vector-icons/Foundation';
-import CommonStyles from './Common.style';
-import ModalStyles from './Modal.style';
+import CommonStyles from '../shared/Common.style';
+import ModalStyles from '../shared/Modal.style';
 export default class AdminHome extends React.Component {
   state = {userKey: '', errorMessage: null, notificationModalVisible: false};
   handleLogin = () => {
@@ -78,12 +78,17 @@ export default class AdminHome extends React.Component {
           onRequestClose={() => {}}>
           <View style={ModalStyles.centeredView}>
             <View style={ModalStyles.modalView}>
-              <TextInput
-                multiline
-                style={styles.modalTextInput}
-                placeholder="Enter your message"
-              />
-
+              <Text style={ModalStyles.modalHeading}>Send a notification</Text>
+              <View style={{
+                ...ModalStyles.formInline,
+                  ...styles.formInline,
+                }}>
+                <TextInput
+                  multiline
+                  style={styles.modalTextInput}
+                  placeholder="Enter your message"
+                />
+              </View>
               <TouchableOpacity
                 style={{
                   ...ModalStyles.basicButton,
@@ -144,10 +149,9 @@ const styles = StyleSheet.create({
   },
   modalTextInput: {
     width: '100%',
-    height: '50%',
-    borderColor: 'gray',
-    borderWidth: 1,
-    borderRadius: 5,
     textAlignVertical: 'top',
+  },
+  formInline: {
+    height: '50%',
   },
 });

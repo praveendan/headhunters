@@ -8,7 +8,7 @@ class TopBar extends React.Component {
       <View style={styles.container}>
         <Image
           style={styles.logoStyle}
-          source={require('../img/HH_logo.png')}
+          source={require('../../img/HH_logo.png')}
         />
         <Icon name="list" size={30} color={Colors.light} />
       </View>

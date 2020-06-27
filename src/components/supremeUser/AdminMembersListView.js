@@ -7,10 +7,12 @@ import {
   ScrollView,
   Modal,
   Alert,
+  TextInput,
+  Picker,
 } from 'react-native';
-import TopBar from './TopBar';
-import {Colors} from './ColourSheet';
-import ModalStyles from './Modal.style';
+import TopBar from '../shared/TopBar';
+import {Colors} from '../shared/ColourSheet';
+import ModalStyles from '../shared/Modal.style';
 
 class UpdatesList extends Component {
   state = {
@@ -19,41 +21,55 @@ class UpdatesList extends Component {
         id: 0,
         name: 'Ben',
         key: 'xxxxxxxxxxxxxx',
+        role: 'member',
       },
       {
         id: 1,
         name: 'Susan',
         key: 'xxxxxxxxxxxxxx',
+        role: 'member',
       },
       {
         id: 2,
         name: 'Robert',
         key: 'xxxxxxxxxxxxxx',
+        role: 'member',
       },
       {
         id: 3,
         name: 'Mary',
         key: 'xxxxxxxxxxxxxx',
+        role: 'member',
       },
       {
         id: 4,
         name: 'Mary',
         key: 'xxxxxxxxxxxxxx',
+        role: 'member',
       },
       {
         id: 5,
         name: 'Loren',
         key: 'xxxxxxxxxxxxxx',
+        role: 'member',
       },
       {
         id: 6,
         name: 'Json',
         key: 'xxxxxxxxxxxxxx',
+        role: 'member',
       },
       {
         id: 7,
         name: 'Anaz',
         key: 'Lxxxxxxxxxxxxxxt',
+        role: 'member',
+      },
+    ],
+    roles: [
+      {
+        key: 'member',
+        displayName: 'Member',
       },
     ],
     modalVisible: false,
@@ -96,7 +112,7 @@ class UpdatesList extends Component {
                 this.showModal(item);
               }}>
               <Text style={styles.itemTitle}>User name: {item.name}</Text>
-              <Text style={styles.itemExcerpt}>Key: {item.key}</Text>
+              <Text style={styles.itemExcerpt}>Role: {item.role}</Text>
             </TouchableOpacity>
           ))}
         </ScrollView>
@@ -107,13 +123,36 @@ class UpdatesList extends Component {
           onRequestClose={() => {}}>
           <View style={ModalStyles.centeredView}>
             <View style={ModalStyles.modalView}>
-              <Text style={ModalStyles.modalText}>
-                Member name: {modalData.name}
-              </Text>
-              <Text style={ModalStyles.modalText}>
-                Member key: {modalData.key}
-              </Text>
-
+              <Text style={ModalStyles.modalHeading}>Edit Member</Text>
+              <View style={ModalStyles.formInline}>
+                <Text style={ModalStyles.modalTitle}>Name</Text>
+                <TextInput
+                  style={ModalStyles.modalTextInput}
+                  value={modalData.name}
+                />
+              </View>
+              <View style={ModalStyles.formInline}>
+                <Text style={ModalStyles.modalTitle}>Key</Text>
+                <TextInput
+                  style={ModalStyles.modalTextInput}
+                  value={modalData.key}
+                />
+              </View>
+              <View style={ModalStyles.formInline}>
+                <Text style={styles.modalTitle}>Type</Text>
+                <Picker
+                  selectedValue={modalData.role}
+                  style={styles.modalTextInput}
+                  onValueChange={(itemValue, itemIndex) => {}}>
+                  {this.state.roles.map((item, index) => (
+                    <Picker.Item
+                      key={index}
+                      label={item.displayName}
+                      value={item.key}
+                    />
+                  ))}
+                </Picker>
+              </View>
               <TouchableOpacity
                 style={{
                   ...ModalStyles.basicButton,
