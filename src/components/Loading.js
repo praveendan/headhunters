@@ -1,27 +1,31 @@
 import React, {Component} from 'react';
 import {View, Text, ActivityIndicator, StyleSheet} from 'react-native';
-//import firebase from 'react-native-firebase';
 import {Colors} from './shared/ColourSheet';
-//import AsyncStorage from '@react-native-community/async-storage';
+import AsyncStorage from '@react-native-community/async-storage';
 
 export default class Loading extends Component {
-  state = {storeKey: 'userId'};
+  state = {storeKey: 'userId', isAuthorized: 'isAuthorized'};
   componentDidMount() {
-    // this.retrieveData();
+    this.retrieveData();
   }
 
-  // retrieveData = async () => {
-  //   try {
-  //     const value = await AsyncStorage.getItem(this.state.storeKey);
-  //     if (value !== null) {
-  //       this.props.navigation.navigate('Login');
-  //     } else {
-  //       this.props.navigation.navigate('Setup');
-  //     }
-  //   } catch (error) {
-  //     this.props.navigation.navigate('Setup');
-  //   }
-  // };
+  retrieveData = async () => {
+    try {
+      const isAuthorized = await AsyncStorage.getItem(this.state.isAuthorized);
+      if (isAuthorized !== null) {
+      } else {
+        this.props.navigation.navigate('Startup');
+      }
+      //     const value = await AsyncStorage.getItem(this.state.storeKey);
+      //     if (value !== null) {
+      //       this.props.navigation.navigate('Login');
+      //     } else {
+      //       this.props.navigation.navigate('Setup');
+      //     }
+    } catch (error) {
+      this.props.navigation.navigate('Startup');
+    }
+  };
 
   render() {
     return (
