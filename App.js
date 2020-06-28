@@ -35,7 +35,7 @@ export default createAppContainer(
       //  Main,
     },
     {
-      initialRouteName: 'Setup',
+      initialRouteName: 'Loading',
       //initialRouteName: 'UpdatesList',
     },
   ),

@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "810318585354",
+    "firebase_url": "https://headhunters-7a3a7.firebaseio.com",
+    "project_id": "headhunters-7a3a7",
+    "storage_bucket": "headhunters-7a3a7.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:810318585354:android:73629765d0d612af5dc9f3",
+        "android_client_info": {
+          "package_name": "com.headhunters"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "810318585354-mlhvhk730rp9tkc1a0l8vt0tbnp8mi4s.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDc0AbDHigDZzrUAzgK-uci8qUFsBBSN_Y"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "810318585354-mlhvhk730rp9tkc1a0l8vt0tbnp8mi4s.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

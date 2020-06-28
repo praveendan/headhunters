@@ -7,7 +7,7 @@ import {Colors} from './shared/ColourSheet';
 export default class Loading extends Component {
   state = {storeKey: 'userId'};
   componentDidMount() {
-   // this.retrieveData();
+    // this.retrieveData();
   }
 
   // retrieveData = async () => {
