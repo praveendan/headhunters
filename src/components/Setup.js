@@ -49,7 +49,13 @@ export default class Login extends React.Component {
   };
 
   setUserId = async (userId) => {
-    await AsyncStorage.setItem('userId', userId);
+    try {
+      await AsyncStorage.setItem('userId', userId);
+    } catch (error) {
+      this.setState({
+        errorMessage: 'Error setting up. Please try again later',
+      });
+    }
   };
   render() {
     return (

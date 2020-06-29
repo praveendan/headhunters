@@ -4,7 +4,7 @@ import {Colors} from './shared/ColourSheet';
 import AsyncStorage from '@react-native-community/async-storage';
 
 export default class Loading extends Component {
-  state = {storeKey: 'userId', isAuthorized: 'isAuthorized'};
+  state = {isAuthorized: 'isAuthorized'};
   componentDidMount() {
     this.retrieveData();
   }
