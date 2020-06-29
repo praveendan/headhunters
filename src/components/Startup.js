@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {Component} from 'react';
 import {
   StyleSheet,
   Text,
@@ -7,30 +7,57 @@ import {
   TouchableOpacity,
 } from 'react-native';
 import {Colors} from './shared/ColourSheet';
+import database from '@react-native-firebase/database';
+import AsyncStorage from '@react-native-community/async-storage';
 export default class Login extends React.Component {
-  state = {userId: '', userKey: '', errorMessage: null};
-  handleMagicWord = () => {
-    //login
+  state = {magicWord: '', errorMessage: null, compareKey: ''};
+
+  componentDidMount() {
+    this.retrieveData();
+  }
+
+  retrieveData = async () => {
+    database()
+      .ref('globals/magic_word')
+      .once('value')
+      .then((snapshot) => {
+        this.state.compareKey = snapshot.val();
+      });
+  };
+
+  handleMagicWord = async () => {
+    if (this.state.compareKey === this.state.magicWord) {
+      try {
+        await AsyncStorage.setItem('isAuthorized', 'true');
+        this.props.navigation.navigate('Setup');
+      } catch (error) {
+        this.setState({
+          errorMessage: 'Error validating Magic word. Please try again later',
+        });
+      }
+    } else {
+      this.setState({errorMessage: 'Wrong Magic word.!'});
+    }
   };
   render() {
     return (
       <View style={styles.container}>
-        {this.state.errorMessage && (
-          <Text style={Colors.highlight}>{this.state.errorMessage}</Text>
-        )}
         <Text style={styles.welcomeText}>Enter the Magic word</Text>
         <TextInput
           style={styles.textInput}
           autoCapitalize="none"
           placeholder="User Key"
-          onChangeText={(userKey) => this.setState({userKey})}
-          value={this.state.userKey}
+          onChangeText={(magicWord) => this.setState({magicWord})}
+          value={this.state.magicWord}
         />
         <TouchableOpacity
           style={styles.loginButton}
           onPress={this.handleMagicWord}>
           <Text style={styles.loginButtonText}>Enter.!</Text>
         </TouchableOpacity>
+        {this.state.errorMessage && (
+          <Text style={styles.errorMessage}>{this.state.errorMessage}</Text>
+        )}
       </View>
     );
   }
@@ -67,5 +94,9 @@ const styles = StyleSheet.create({
     fontSize: 25,
     color: Colors.light,
     fontWeight: 'bold',
+  },
+  errorMessage: {
+    fontSize: 15,
+    color: Colors.highlight,
   },
 });

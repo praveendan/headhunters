@@ -13,15 +13,10 @@ export default class Loading extends Component {
     try {
       const isAuthorized = await AsyncStorage.getItem(this.state.isAuthorized);
       if (isAuthorized !== null) {
+        this.props.navigation.navigate('Login');
       } else {
         this.props.navigation.navigate('Startup');
       }
-      //     const value = await AsyncStorage.getItem(this.state.storeKey);
-      //     if (value !== null) {
-      //       this.props.navigation.navigate('Login');
-      //     } else {
-      //       this.props.navigation.navigate('Setup');
-      //     }
     } catch (error) {
       this.props.navigation.navigate('Startup');
     }

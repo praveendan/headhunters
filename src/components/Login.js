@@ -9,11 +9,30 @@ import {
 } from 'react-native';
 
 import {Colors} from './shared/ColourSheet';
+import AsyncStorage from '@react-native-community/async-storage';
 export default class Login extends React.Component {
-  state = {userKey: '', errorMessage: null};
+  state = {userKey: '', errorMessage: null, storedUserId: 'userId'};
+
+  componentDidMount() {
+    this.checkUser();
+  }
+
+  checkUser = async () => {
+    try {
+      const storedUserId = await AsyncStorage.getItem(this.state.storedUserId);
+
+      if (storedUserId === null) {
+        this.props.navigation.navigate('Setup');
+      }
+    } catch (error) {
+      this.props.navigation.navigate('Setup');
+    }
+  };
+
   handleLogin = () => {
     //login
   };
+
   render() {
     return (
       <View style={styles.container}>
