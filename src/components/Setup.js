@@ -33,7 +33,7 @@ export default class Login extends React.Component {
           } else {
             if (this.state.compareUser.user_key === this.state.userKey) {
               this.setUserId(this.state.userId);
-              this.props.navigation.navigate('Login');
+              //just log in
             } else {
               this.setState({
                 errorMessage: 'Invalid User Key. please contact Administrator',
