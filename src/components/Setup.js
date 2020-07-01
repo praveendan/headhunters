@@ -8,7 +8,9 @@ import {
   TouchableOpacity,
 } from 'react-native';
 import {Colors} from './shared/ColourSheet';
+import {Roles, AppData} from './shared/Strings';
 import database from '@react-native-firebase/database';
+import auth from '@react-native-firebase/auth';
 import AsyncStorage from '@react-native-community/async-storage';
 export default class Login extends React.Component {
   state = {
@@ -20,6 +22,8 @@ export default class Login extends React.Component {
   };
 
   handleLogin = () => {
+    this.setState({errorMessage: null});
+    this.setState({setupButtonText: 'SETTING UP..'});
     if (this.state.userId !== '') {
       database()
         .ref('users/' + this.state.userId)
@@ -30,14 +34,17 @@ export default class Login extends React.Component {
             this.setState({
               errorMessage: 'Wrong User Id. please contact Administrator',
             });
+            this.setState({setupButtonText: 'SETUP'});
           } else {
             if (this.state.compareUser.user_key === this.state.userKey) {
               this.setUserId(this.state.userId);
               //just log in
+              this.loginUser();
             } else {
               this.setState({
                 errorMessage: 'Invalid User Key. please contact Administrator',
               });
+              this.setState({setupButtonText: 'SETUP'});
             }
           }
         });
@@ -45,7 +52,30 @@ export default class Login extends React.Component {
       this.setState({
         errorMessage: 'User Id cannot be empty',
       });
+      this.setState({setupButtonText: 'SETUP'});
     }
+  };
+
+  loginUser = () => {
+    auth()
+      .signInWithEmailAndPassword(
+        this.state.userId + '@headhuntersnz.com',
+        this.state.userKey,
+      )
+      .then(() => {
+        if (this.state.compareUser.user_role === Roles.MEMBER) {
+          this.props.navigation.navigate('MemberHome');
+        } else if (this.state.compareUser.user_role === Roles.SUPREMEUSER) {
+          this.props.navigation.navigate('AdminHome');
+        }
+      })
+      .catch((error) => {
+        console.log(error.message);
+        console.error(error.code);
+        this.setState({
+          errorMessage: 'Critical error.! Please contact Administrator',
+        });
+      });
   };
 
   setUserId = async (userId) => {
@@ -57,6 +87,7 @@ export default class Login extends React.Component {
       });
     }
   };
+
   render() {
     return (
       <View style={styles.container}>
@@ -86,7 +117,9 @@ export default class Login extends React.Component {
         {this.state.errorMessage && (
           <Text style={styles.errorMessage}>{this.state.errorMessage}</Text>
         )}
-        <Text style={styles.footerText}>HEAD-HUNTERS INTERCOM v1.1</Text>
+        <Text style={styles.footerText}>
+          HEAD-HUNTERS INTERCOM v{AppData.VERSION}
+        </Text>
       </View>
     );
   }
