@@ -8,7 +8,7 @@ import Loading from './src/components/Loading';
 import Setup from './src/components/Setup';
 import Login from './src/components/Login';
 import MemberHome from './src/components/member/MemberHome';
-import UpdatesList from './src/components/member/MemberUpdatesListView';
+import MemberUpdatesList from './src/components/member/MemberUpdatesListView';
 
 import AdminHome from './src/components/supremeUser/AdminHome';
 import MembersList from './src/components/supremeUser/AdminMembersListView';
@@ -29,7 +29,7 @@ export default createAppContainer(
       Setup,
       Login,
       MemberHome,
-      UpdatesList,
+      MemberUpdatesList,
       AdminHome,
       MembersList,
       //  Main,

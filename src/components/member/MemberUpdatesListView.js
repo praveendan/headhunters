@@ -92,6 +92,7 @@ class UpdatesList extends Component {
   setModalVisible = (visible) => {
     this.setState({modalVisible: visible});
   };
+
   render() {
     const {modalVisible, modalText} = this.state;
     return (

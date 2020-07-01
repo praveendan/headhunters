@@ -1,5 +1,5 @@
 import React from 'react';
-import {StyleSheet, Text, View} from 'react-native';
+import {StyleSheet, Text, View, TouchableOpacity} from 'react-native';
 
 import TopBar from '../shared/TopBar';
 import {Colors} from '../shared/ColourSheet';
@@ -8,7 +8,11 @@ import CommonStyles from '../shared/Common.style';
 
 export default class MemberHome extends React.Component {
   state = {userKey: '', errorMessage: null};
-  handleLogin = () => {
+  openEvents = () => {
+    this.props.navigation.navigate('MemberUpdatesList');
+  };
+
+  openNews = () => {
     //login
   };
   render() {
@@ -16,7 +20,9 @@ export default class MemberHome extends React.Component {
       <View style={CommonStyles.container}>
         <TopBar />
         <View style={CommonStyles.viewContainer}>
-          <View style={styles.viewContainerItem}>
+          <TouchableOpacity
+            style={styles.viewContainerItem}
+            onPress={this.openEvents}>
             <View style={styles.viewContainerItemMain}>
               <Text style={styles.viewContainerItemHeading}>EVENTS</Text>
               <Text style={styles.viewContainerItemSubHeading}>
@@ -31,8 +37,10 @@ export default class MemberHome extends React.Component {
               name="arrow-right"
               color={Colors.light}
             />
-          </View>
-          <View style={styles.viewContainerItem}>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={styles.viewContainerItem}
+            onPress={this.openNews}>
             <View style={styles.viewContainerItemMain}>
               <Text style={styles.viewContainerItemHeading}>NEWS</Text>
               <Text style={styles.viewContainerItemSubHeading}>
@@ -47,7 +55,7 @@ export default class MemberHome extends React.Component {
               name="arrow-right"
               color={Colors.light}
             />
-          </View>
+          </TouchableOpacity>
         </View>
       </View>
     );
