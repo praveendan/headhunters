@@ -8,7 +8,7 @@ import {
   TouchableOpacity,
 } from 'react-native';
 import {Colors} from './shared/ColourSheet';
-import {Roles, AppData} from './shared/Strings';
+import {Roles, AppData, LoginMessages} from './shared/Strings';
 import database from '@react-native-firebase/database';
 import auth from '@react-native-firebase/auth';
 import AsyncStorage from '@react-native-community/async-storage';
@@ -18,12 +18,12 @@ export default class Login extends React.Component {
     userKey: '',
     compareUser: {},
     errorMessage: null,
-    setupButtonText: 'SETUP',
+    setupButtonText: LoginMessages.SETUP_BUTTON,
   };
 
   handleLogin = () => {
     this.setState({errorMessage: null});
-    this.setState({setupButtonText: 'SETTING UP..'});
+    this.setState({setupButtonText: LoginMessages.SETTING_UP_BUTTON});
     if (this.state.userId !== '') {
       database()
         .ref('users/' + this.state.userId)
@@ -32,9 +32,9 @@ export default class Login extends React.Component {
           this.state.compareUser = snapshot.val();
           if (this.state.compareUser === null) {
             this.setState({
-              errorMessage: 'Wrong User Id. please contact Administrator',
+              errorMessage: LoginMessages.WRONG_USER_ID,
             });
-            this.setState({setupButtonText: 'SETUP'});
+            this.setState({setupButtonText: LoginMessages.SETUP_BUTTON});
           } else {
             if (this.state.compareUser.user_key === this.state.userKey) {
               this.setUserId(this.state.userId);
@@ -42,30 +42,30 @@ export default class Login extends React.Component {
               this.loginUser();
             } else {
               this.setState({
-                errorMessage: 'Invalid User Key. please contact Administrator',
+                errorMessage: LoginMessages.INVALID_USER_KEY,
               });
-              this.setState({setupButtonText: 'SETUP'});
+              this.setState({setupButtonText: LoginMessages.SETUP_BUTTON});
             }
           }
         });
     } else {
       this.setState({
-        errorMessage: 'User Id cannot be empty',
+        errorMessage: LoginMessages.EMPTY_USER_ID,
       });
-      this.setState({setupButtonText: 'SETUP'});
+      this.setState({setupButtonText: LoginMessages.SETUP_BUTTON});
     }
   };
 
   loginUser = () => {
     auth()
       .signInWithEmailAndPassword(
-        this.state.userId + '@headhuntersnz.com',
+        this.state.userId + AppData.USER_SUFFIX,
         this.state.userKey,
       )
       .then(() => {
         if (this.state.compareUser.user_role === Roles.MEMBER) {
           this.props.navigation.navigate('MemberHome');
-        } else if (this.state.compareUser.user_role === Roles.SUPREMEUSER) {
+        } else if (this.state.compareUser.user_role === Roles.SUPREME_USER) {
           this.props.navigation.navigate('AdminHome');
         }
       })
@@ -73,7 +73,7 @@ export default class Login extends React.Component {
         console.log(error.message);
         console.error(error.code);
         this.setState({
-          errorMessage: 'Critical error.! Please contact Administrator',
+          errorMessage: LoginMessages.LOGIN_ERROR,
         });
       });
   };
@@ -83,7 +83,7 @@ export default class Login extends React.Component {
       await AsyncStorage.setItem('userId', userId);
     } catch (error) {
       this.setState({
-        errorMessage: 'Error setting up. Please try again later',
+        errorMessage: LoginMessages.SETUP_ERROR,
       });
     }
   };

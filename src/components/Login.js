@@ -9,7 +9,7 @@ import {
 } from 'react-native';
 
 import {Colors} from './shared/ColourSheet';
-import {Roles, AppData} from './shared/Strings';
+import {Roles, AppData, LoginMessages} from './shared/Strings';
 import AsyncStorage from '@react-native-community/async-storage';
 import database from '@react-native-firebase/database';
 import auth from '@react-native-firebase/auth';
@@ -49,17 +49,20 @@ export default class Login extends React.Component {
   };
 
   handleLogin = () => {
+    this.setState({
+      errorMessage: null,
+    });
     if (this.state.userKey !== '' && this.state.userKey !== null) {
-      this.setState({loginButtonText: 'LOGGING IN..'});
+      this.setState({loginButtonText: LoginMessages.LOGGING_IN_BUTTON});
       auth()
         .signInWithEmailAndPassword(
-          this.state.storedUserId + '@headhuntersnz.com',
+          this.state.storedUserId + AppData.USER_SUFFIX,
           this.state.userKey,
         )
         .then(() => {
           if (this.state.compareUser.user_role === Roles.MEMBER) {
             this.props.navigation.navigate('MemberHome');
-          } else if (this.state.compareUser.user_role === Roles.SUPREMEUSER) {
+          } else if (this.state.compareUser.user_role === Roles.SUPREME_USER) {
             this.props.navigation.navigate('AdminHome');
           }
         })
@@ -70,14 +73,14 @@ export default class Login extends React.Component {
             });
           } else {
             this.setState({
-              errorMessage: 'Critical error.! Please contact Administrator',
+              errorMessage: LoginMessages.CRITICAL_ERROR,
             });
           }
-          this.setState({loginButtonText: 'LOGIN'});
+          this.setState({loginButtonText: LoginMessages.LOG_IN_BUTTON});
         });
     } else {
       this.setState({
-        errorMessage: 'User key should not be empty.!',
+        errorMessage: LoginMessages.EMPTY_USER_KEY_ERROR,
       });
     }
   };
@@ -100,7 +103,7 @@ export default class Login extends React.Component {
       this.props.navigation.navigate('Setup');
     } catch (exception) {
       this.setState({
-        errorMessage: 'Error.! Please restart the app',
+        errorMessage: LoginMessages.RESTART_APP_MESSAGE,
       });
     }
   };
