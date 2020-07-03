@@ -23,7 +23,6 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.dark,
     alignItems: 'center',
     justifyContent: 'space-between', // center, space-around
-    margin: 10,
   },
   logoStyle: {
     width: 100,

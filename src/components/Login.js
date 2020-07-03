@@ -21,14 +21,10 @@ export default class Login extends React.Component {
     storedUserId: null,
     loginButtonText: 'LOGIN',
     compareUser: null,
+    isReadyToLogin: false,
   };
 
   componentDidMount() {
-    auth().onAuthStateChanged((user) => {
-      if (user) {
-        auth().signOut();
-      }
-    });
     this.checkUser();
   }
 
@@ -61,7 +57,7 @@ export default class Login extends React.Component {
         )
         .then(() => {
           if (this.state.compareUser.user_role === Roles.MEMBER) {
-            this.props.navigation.navigate('MemberHome');
+            this.props.navigation.navigate('MemberBase');
           } else if (this.state.compareUser.user_role === Roles.SUPREME_USER) {
             this.props.navigation.navigate('AdminHome');
           }
@@ -93,6 +89,11 @@ export default class Login extends React.Component {
         this.state.compareUser = snapshot.val();
         if (snapshot.val() === null) {
           this.clearUserId();
+        } else {
+          console.log('ready nigga');
+          this.setState({
+            isReadyToLogin: true,
+          });
         }
       });
   };
@@ -105,6 +106,18 @@ export default class Login extends React.Component {
       this.setState({
         errorMessage: LoginMessages.RESTART_APP_MESSAGE,
       });
+    }
+  };
+
+  renderLoginButton = () => {
+    if (this.state.isReadyToLogin === true) {
+      return (
+        <TouchableOpacity style={styles.loginButton} onPress={this.handleLogin}>
+          <Text style={styles.loginButtonText}>
+            {this.state.loginButtonText}
+          </Text>
+        </TouchableOpacity>
+      );
     }
   };
   render() {
@@ -121,11 +134,7 @@ export default class Login extends React.Component {
           onChangeText={(userKey) => this.setState({userKey})}
           value={this.state.userKey}
         />
-        <TouchableOpacity style={styles.loginButton} onPress={this.handleLogin}>
-          <Text style={styles.loginButtonText}>
-            {this.state.loginButtonText}
-          </Text>
-        </TouchableOpacity>
+        {this.renderLoginButton()}
         {this.state.errorMessage && (
           <Text style={styles.errorMessage}>{this.state.errorMessage}</Text>
         )}

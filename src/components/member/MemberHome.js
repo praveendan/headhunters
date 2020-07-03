@@ -5,20 +5,24 @@ import TopBar from '../shared/TopBar';
 import {Colors} from '../shared/ColourSheet';
 import Icon from 'react-native-vector-icons/Foundation';
 import CommonStyles from '../shared/Common.style';
+import {MemberItemType} from '../shared/Strings';
 
 export default class MemberHome extends React.Component {
   state = {userKey: '', errorMessage: null};
   openEvents = () => {
-    this.props.navigation.navigate('MemberUpdatesList');
+    this.props.navigation.navigate('MemberUpdatesList', {
+      subType: MemberItemType.EVENTS,
+    });
   };
 
   openNews = () => {
-    //login
+    this.props.navigation.navigate('MemberUpdatesList', {
+      subType: MemberItemType.NEWS,
+    });
   };
   render() {
     return (
       <View style={CommonStyles.container}>
-        <TopBar />
         <View style={CommonStyles.viewContainer}>
           <TouchableOpacity
             style={styles.viewContainerItem}

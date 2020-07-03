@@ -22,3 +22,12 @@ export const LoginMessages = {
   LOG_IN_BUTTON: 'LOGIN',
   LOGGING_IN_BUTTON: 'LOGGING IN..',
 };
+
+export const MemberItemType = {
+  EVENTS: 'events',
+  NEWS: 'news',
+};
+
+export const LocalizedEventsGroups = {
+  GLOBAL: 'global',
+};

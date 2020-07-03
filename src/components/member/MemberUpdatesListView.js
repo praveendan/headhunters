@@ -1,4 +1,4 @@
-import React, {Component, useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import {
   Text,
   View,
@@ -6,154 +6,129 @@ import {
   StyleSheet,
   ScrollView,
   Modal,
+  ActivityIndicator,
 } from 'react-native';
-import TopBar from '../shared/TopBar';
+import database from '@react-native-firebase/database';
+import auth from '@react-native-firebase/auth';
+
 import {Colors} from '../shared/ColourSheet';
 import ModalStyles from '../shared/Modal.style';
+import {MemberItemType, LocalizedEventsGroups} from '../shared/Strings';
 
-class UpdatesList extends Component {
-  state = {
-    names: [
-      {
-        id: 0,
-        name: 'Ben',
-        date: 'xx/xx/xxxx',
-        description: 'consectetur adipiscing elit',
-      },
-      {
-        id: 1,
-        name: 'Susan',
-        date: 'xx/xx/xxxx',
-        description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit',
-      },
-      {
-        id: 2,
-        name: 'Robert',
-        date: 'xx/xx/xxxx',
-        description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit',
-      },
-      {
-        id: 3,
-        name: 'Mary',
-        date: 'xx/xx/xxxx',
-        description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit',
-      },
-      {
-        id: 4,
-        name: 'Mary',
-        date: 'xx/xx/xxxx',
-        description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit',
-      },
-      {
-        id: 5,
-        name: 'Mary',
-        date: 'xx/xx/xxxx',
-        description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit',
-      },
-      {
-        id: 6,
-        name: 'Mary',
-        date: 'xx/xx/xxxx',
-        description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit',
-      },
-      {
-        id: 7,
-        name: 'Mary',
-        date: 'xx/xx/xxxx',
-        description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit',
-      },
-      {
-        id: 8,
-        name: 'Mary',
-        date: 'xx/xx/xxxx',
-        description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit',
-      },
-      {
-        id: 9,
-        name: 'Mary',
-        date: 'xx/xx/xxxx',
-        description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit',
-      },
-      {
-        id: 10,
-        name: 'Mary',
-        date: 'xx/xx/xxxx',
-        description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit',
-      },
-    ],
-    modalVisible: false,
-    modalText: 'dummy',
+export default function UpdatesList({route, navigation}) {
+  const {subType} = route.params;
+  const [modalVisible, setModalVisible] = useState(false);
+  const [modalText, setModalText] = useState('dummy');
+
+  const [dataList, setDataList] = useState(null);
+
+  auth().onAuthStateChanged((user) => {
+    if (user) {
+      console.log('user logged');
+    } else {
+      console.log('hufk');
+      navigation.navigate('Login');
+    }
+  });
+
+  useEffect(() => {
+    database()
+      .ref(subType + '/' + LocalizedEventsGroups.GLOBAL + '/')
+      .once('value')
+      .then((snapshot) => {
+        setDataList(snapshot.val());
+        if (snapshot.val() === null) {
+          console.log('nodata');
+        }
+        console.log(dataList);
+      });
+  }, []);
+
+  var showModal = (item) => {
+    setModalText(item);
+    setModalVisible(true);
   };
 
-  showModal = (item) => {
-    this.setState({modalText: item});
-    this.setModalVisible(true);
-  };
-  setModalVisible = (visible) => {
-    this.setState({modalVisible: visible});
+  var getExcerpt = (string) => {
+    if (string.length > 100) {
+      return string.substring(0, 100) + '...  Read more';
+    } else {
+      return string;
+    }
   };
 
-  render() {
-    const {modalVisible, modalText} = this.state;
-    return (
-      <View style={styles.container}>
-        <TopBar />
+  var generateList = () => {
+    if (dataList !== null) {
+      return (
         <ScrollView>
-          {this.state.names.map((item, index) => (
+          {dataList.map((item, index) => (
             <TouchableOpacity
               key={item.id}
               style={styles.itemContainer}
               onPress={() => {
-                this.showModal(item);
+                showModal(item);
               }}>
               <Text style={styles.itemTitle}>{item.name}</Text>
               <View style={styles.itemExcerpt}>
                 <Text style={styles.itemExcerptTextDate}>
                   Date: {item.date}
                 </Text>
-                <Text style={styles.itemExcerptText}>{item.description}</Text>
+                <Text style={styles.itemExcerptText}>
+                  {getExcerpt(item.description)}
+                </Text>
               </View>
             </TouchableOpacity>
           ))}
         </ScrollView>
-        <Modal
-          animationType="slide"
-          transparent={true}
-          visible={modalVisible}
-          onRequestClose={() => {}}>
-          <View style={ModalStyles.centeredView}>
-            <View style={ModalStyles.modalView}>
-              <Text style={ModalStyles.modalHeading}>Details</Text>
-              <View style={ModalStyles.formInline}>
-                <Text style={ModalStyles.modalTitle}>Date :</Text>
-                <Text
-                  style={{
-                    ...ModalStyles.modalTextInput,
-                    ...styles.modalTextInput,
-                  }}>
-                  {modalText.date}
-                </Text>
-              </View>
-              <Text style={ModalStyles.modalText}>{modalText.description}</Text>
+      );
+    }
+  };
 
-              <TouchableOpacity
+  var generateActivityIndicator = () => {
+    if (dataList === null) {
+      return <ActivityIndicator size="large" color={Colors.highlight} />;
+    }
+  };
+
+  return (
+    <View style={styles.container}>
+      {generateActivityIndicator()}
+      {generateList()}
+      <Modal
+        animationType="slide"
+        transparent={true}
+        visible={modalVisible}
+        onRequestClose={() => {}}>
+        <View style={ModalStyles.centeredView}>
+          <View style={ModalStyles.modalView}>
+            <Text style={ModalStyles.modalHeading}>Details</Text>
+            <View style={ModalStyles.formInline}>
+              <Text style={ModalStyles.modalTitle}>Date :</Text>
+              <Text
                 style={{
-                  ...ModalStyles.basicButton,
-                  backgroundColor: Colors.dark,
-                }}
-                onPress={() => {
-                  this.setModalVisible(!modalVisible);
+                  ...ModalStyles.modalTextInput,
+                  ...styles.modalTextInput,
                 }}>
-                <Text style={ModalStyles.textStyle}>Close</Text>
-              </TouchableOpacity>
+                {modalText.date}
+              </Text>
             </View>
+            <Text style={ModalStyles.modalText}>{modalText.description}</Text>
+            <TouchableOpacity
+              style={{
+                ...ModalStyles.basicButton,
+                backgroundColor: Colors.dark,
+              }}
+              onPress={() => {
+                setModalVisible(!modalVisible);
+              }}>
+              <Text style={ModalStyles.textStyle}>Close</Text>
+            </TouchableOpacity>
           </View>
-        </Modal>
-      </View>
-    );
-  }
+        </View>
+      </Modal>
+    </View>
+  );
 }
-export default UpdatesList;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
