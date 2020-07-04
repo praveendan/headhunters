@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState} from 'react';
 import {
   StyleSheet,
   Text,
@@ -7,114 +7,111 @@ import {
   Modal,
   TextInput,
 } from 'react-native';
-import TopBar from '../shared/TopBar';
 import {Colors} from '../shared/ColourSheet';
-import Icon from 'react-native-vector-icons/Foundation';
 import CommonStyles from '../shared/Common.style';
 import ModalStyles from '../shared/Modal.style';
-export default class AdminHome extends React.Component {
-  state = {userKey: '', errorMessage: null, notificationModalVisible: false};
-  handleLogin = () => {
-    //login
+export default function MemberHome({route, navigation}) {
+  const [notificationModalVisible, setNotificationModalVisible] = useState(
+    false,
+  );
+
+  var openMembers = () => {
+    navigation.navigate('AdminMembersListView');
   };
 
-  setNotificationModalVisible = (visible) => {
-    this.setState({notificationModalVisible: visible});
-  };
-  render() {
-    const {notificationModalVisible} = this.state;
-    return (
-      <View style={CommonStyles.container}>
-        <TopBar />
-        <View style={CommonStyles.viewContainer}>
-          <TouchableOpacity style={styles.viewContainerItem}>
-            <View style={styles.viewContainerItemMain}>
-              <Text style={styles.viewContainerItemHeading}>MEMBERS</Text>
-              <Text style={styles.viewContainerItemSubHeading}>
-                ADD, REMOVE, EDIT MEMBERS
-              </Text>
-            </View>
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.viewContainerItem}>
-            <View style={styles.viewContainerItemMain}>
-              <Text style={styles.viewContainerItemHeading}>NEWS</Text>
-              <Text style={styles.viewContainerItemSubHeading}>
-                ADD, EDIT NEWS
-              </Text>
-            </View>
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.viewContainerItem}>
-            <View style={styles.viewContainerItemMain}>
-              <Text style={styles.viewContainerItemHeading}>EVENTS</Text>
-              <Text style={styles.viewContainerItemSubHeading}>
-                ADD, EDIT EVENTS
-              </Text>
-            </View>
-          </TouchableOpacity>
-          <TouchableOpacity
+  return (
+    <View style={CommonStyles.container}>
+      <View style={CommonStyles.viewContainer}>
+        <TouchableOpacity
+          style={styles.viewContainerItem}
+          onPress={openMembers}>
+          <View style={styles.viewContainerItemMain}>
+            <Text style={styles.viewContainerItemHeading}>MEMBERS</Text>
+            <Text style={styles.viewContainerItemSubHeading}>
+              ADD, REMOVE, EDIT MEMBERS
+            </Text>
+          </View>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.viewContainerItem}>
+          <View style={styles.viewContainerItemMain}>
+            <Text style={styles.viewContainerItemHeading}>NEWS</Text>
+            <Text style={styles.viewContainerItemSubHeading}>
+              ADD, EDIT NEWS
+            </Text>
+          </View>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.viewContainerItem}>
+          <View style={styles.viewContainerItemMain}>
+            <Text style={styles.viewContainerItemHeading}>EVENTS</Text>
+            <Text style={styles.viewContainerItemSubHeading}>
+              ADD, EDIT EVENTS
+            </Text>
+          </View>
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={{
+            ...styles.viewContainerItem,
+            ...styles.viewContainerItemLast,
+          }}
+          onPress={() => {
+            setNotificationModalVisible(true);
+          }}>
+          <View
             style={{
-              ...styles.viewContainerItem,
-              ...styles.viewContainerItemLast,
-            }}
-            onPress={() => {
-              this.setNotificationModalVisible(true);
+              ...styles.viewContainerItemMain,
+              ...styles.viewContainerItemMainLast,
             }}>
+            <Text style={styles.viewContainerItemHeading}>NOTIFICATION</Text>
+            <Text style={styles.viewContainerItemSubHeading}>
+              SEND A NOTIFICATION TO ALL
+            </Text>
+          </View>
+        </TouchableOpacity>
+      </View>
+      <Modal
+        animationType="slide"
+        transparent={true}
+        visible={notificationModalVisible}
+        onRequestClose={() => {}}>
+        <View style={ModalStyles.centeredView}>
+          <View style={ModalStyles.modalView}>
+            <Text style={ModalStyles.modalHeading}>Send a notification</Text>
             <View
               style={{
-                ...styles.viewContainerItemMain,
-                ...styles.viewContainerItemMainLast,
-              }}>
-              <Text style={styles.viewContainerItemHeading}>NOTIFICATION</Text>
-              <Text style={styles.viewContainerItemSubHeading}>
-                SEND A NOTIFICATION TO ALL
-              </Text>
-            </View>
-          </TouchableOpacity>
-        </View>
-        <Modal
-          animationType="slide"
-          transparent={true}
-          visible={notificationModalVisible}
-          onRequestClose={() => {}}>
-          <View style={ModalStyles.centeredView}>
-            <View style={ModalStyles.modalView}>
-              <Text style={ModalStyles.modalHeading}>Send a notification</Text>
-              <View style={{
                 ...ModalStyles.formInline,
-                  ...styles.formInline,
-                }}>
-                <TextInput
-                  multiline
-                  style={styles.modalTextInput}
-                  placeholder="Enter your message"
-                />
-              </View>
-              <TouchableOpacity
-                style={{
-                  ...ModalStyles.basicButton,
-                  ...ModalStyles.closeButton,
-                  backgroundColor: Colors.highlight,
-                }}
-                onPress={() => {
-                  this.setNotificationModalVisible(!notificationModalVisible);
-                }}>
-                <Text style={ModalStyles.textStyle}>Close</Text>
-              </TouchableOpacity>
-              <TouchableOpacity
-                style={{
-                  ...ModalStyles.basicButton,
-                  ...ModalStyles.openButton,
-                  backgroundColor: Colors.dark,
-                }}
-                onPress={() => {}}>
-                <Text style={ModalStyles.textStyle}>Send</Text>
-              </TouchableOpacity>
+                ...styles.formInline,
+              }}>
+              <TextInput
+                multiline
+                style={styles.modalTextInput}
+                placeholder="Enter your message"
+              />
             </View>
+            <TouchableOpacity
+              style={{
+                ...ModalStyles.basicButton,
+                ...ModalStyles.closeButton,
+                backgroundColor: Colors.highlight,
+              }}
+              onPress={() => {
+                setNotificationModalVisible(!notificationModalVisible);
+              }}>
+              <Text style={ModalStyles.textStyle}>Close</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={{
+                ...ModalStyles.basicButton,
+                ...ModalStyles.openButton,
+                backgroundColor: Colors.dark,
+              }}
+              onPress={() => {}}>
+              <Text style={ModalStyles.textStyle}>Send</Text>
+            </TouchableOpacity>
           </View>
-        </Modal>
-      </View>
-    );
-  }
+        </View>
+      </Modal>
+    </View>
+  );
 }
 const styles = StyleSheet.create({
   viewContainerItem: {

@@ -73,7 +73,7 @@ export default class Login extends React.Component {
           if (this.state.compareUser.user_role === Roles.MEMBER) {
             this.props.navigation.navigate('MemberBase');
           } else if (this.state.compareUser.user_role === Roles.SUPREME_USER) {
-            this.props.navigation.navigate('AdminHome');
+            this.props.navigation.navigate('AdminBase');
           }
         })
         .catch((error) => {

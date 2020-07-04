@@ -46,17 +46,9 @@ export default class Login extends React.Component {
               isButtonDisabled: false,
             });
           } else {
-            if (this.state.compareUser.user_key === this.state.userKey) {
-              this.setUserId(this.state.userId);
-              //just log in
-              this.loginUser();
-            } else {
-              this.setState({
-                errorMessage: LoginMessages.INVALID_USER_KEY,
-                setupButtonText: LoginMessages.SETUP_BUTTON,
-                isButtonDisabled: false,
-              });
-            }
+            this.setUserId(this.state.userId);
+            //just log in
+            this.loginUser();
           }
         });
     } else {
@@ -79,17 +71,25 @@ export default class Login extends React.Component {
         if (this.state.compareUser.user_role === Roles.MEMBER) {
           this.props.navigation.navigate('MemberBase');
         } else if (this.state.compareUser.user_role === Roles.SUPREME_USER) {
-          this.props.navigation.navigate('AdminHome');
+          this.props.navigation.navigate('AdminBase');
         }
       })
       .catch((error) => {
         console.log(error.message);
         console.error(error.code);
-        this.setState({
-          errorMessage: LoginMessages.LOGIN_ERROR,
-          setupButtonText: LoginMessages.SETUP_BUTTON,
-          isButtonDisabled: false,
-        });
+        if (error.code === 'auth/wrong-password') {
+          this.setState({
+            errorMessage: LoginMessages.INVALID_USER_KEY,
+            setupButtonText: LoginMessages.SETUP_BUTTON,
+            isButtonDisabled: false,
+          });
+        } else {
+          this.setState({
+            errorMessage: LoginMessages.LOGIN_ERROR,
+            setupButtonText: LoginMessages.SETUP_BUTTON,
+            isButtonDisabled: false,
+          });
+        }
       });
   };
 

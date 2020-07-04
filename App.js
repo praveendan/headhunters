@@ -8,8 +8,7 @@ import Login from './src/components/Login';
 //import MemberHome from './src/components/member/MemberHome';
 //import MemberUpdatesList from './src/components/member/MemberUpdatesListView';
 import MemberBase from './src/components/member/MemberBase';
-import AdminHome from './src/components/supremeUser/AdminHome';
-import MembersList from './src/components/supremeUser/AdminMembersListView';
+import AdminBase from './src/components/supremeUser/AdminBase';
 //import Main from './Main';
 // const App: () => React$Node = () => {
 //   return (
@@ -23,8 +22,7 @@ export default createAppContainer(
       Setup,
       Login,
       MemberBase,
-      AdminHome,
-      MembersList,
+      AdminBase,
     },
     {
       initialRouteName: 'Loading',
