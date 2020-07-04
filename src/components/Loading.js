@@ -1,17 +1,19 @@
 import React, {Component} from 'react';
 import {View, Text, ActivityIndicator, StyleSheet} from 'react-native';
 import {Colors} from './shared/ColourSheet';
+import {StorageValueKeys} from './shared/Strings';
 import AsyncStorage from '@react-native-community/async-storage';
 
 export default class Loading extends Component {
-  state = {isAuthorized: 'isAuthorized'};
   componentDidMount() {
     this.retrieveData();
   }
 
   retrieveData = async () => {
     try {
-      const isAuthorized = await AsyncStorage.getItem(this.state.isAuthorized);
+      const isAuthorized = await AsyncStorage.getItem(
+        StorageValueKeys.IS_AUTHORIZED,
+      );
       if (isAuthorized !== null) {
         this.props.navigation.navigate('Login');
       } else {

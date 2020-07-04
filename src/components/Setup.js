@@ -8,7 +8,12 @@ import {
   TouchableOpacity,
 } from 'react-native';
 import {Colors} from './shared/ColourSheet';
-import {Roles, AppData, LoginMessages} from './shared/Strings';
+import {
+  Roles,
+  AppData,
+  LoginMessages,
+  StorageValueKeys,
+} from './shared/Strings';
 import database from '@react-native-firebase/database';
 import auth from '@react-native-firebase/auth';
 import AsyncStorage from '@react-native-community/async-storage';
@@ -19,11 +24,15 @@ export default class Login extends React.Component {
     compareUser: {},
     errorMessage: null,
     setupButtonText: LoginMessages.SETUP_BUTTON,
+    isButtonDisabled: false,
   };
 
   handleLogin = () => {
-    this.setState({errorMessage: null});
-    this.setState({setupButtonText: LoginMessages.SETTING_UP_BUTTON});
+    this.setState({
+      errorMessage: null,
+      setupButtonText: LoginMessages.SETTING_UP_BUTTON,
+      isButtonDisabled: true,
+    });
     if (this.state.userId !== '') {
       database()
         .ref('users/' + this.state.userId)
@@ -33,8 +42,9 @@ export default class Login extends React.Component {
           if (this.state.compareUser === null) {
             this.setState({
               errorMessage: LoginMessages.WRONG_USER_ID,
+              setupButtonText: LoginMessages.SETUP_BUTTON,
+              isButtonDisabled: false,
             });
-            this.setState({setupButtonText: LoginMessages.SETUP_BUTTON});
           } else {
             if (this.state.compareUser.user_key === this.state.userKey) {
               this.setUserId(this.state.userId);
@@ -43,16 +53,18 @@ export default class Login extends React.Component {
             } else {
               this.setState({
                 errorMessage: LoginMessages.INVALID_USER_KEY,
+                setupButtonText: LoginMessages.SETUP_BUTTON,
+                isButtonDisabled: false,
               });
-              this.setState({setupButtonText: LoginMessages.SETUP_BUTTON});
             }
           }
         });
     } else {
       this.setState({
         errorMessage: LoginMessages.EMPTY_USER_ID,
+        setupButtonText: LoginMessages.SETUP_BUTTON,
+        isButtonDisabled: false,
       });
-      this.setState({setupButtonText: LoginMessages.SETUP_BUTTON});
     }
   };
 
@@ -63,8 +75,9 @@ export default class Login extends React.Component {
         this.state.userKey,
       )
       .then(() => {
+        console.log(this.state.compareUser.user_role);
         if (this.state.compareUser.user_role === Roles.MEMBER) {
-          this.props.navigation.navigate('MemberHome');
+          this.props.navigation.navigate('MemberBase');
         } else if (this.state.compareUser.user_role === Roles.SUPREME_USER) {
           this.props.navigation.navigate('AdminHome');
         }
@@ -74,18 +87,31 @@ export default class Login extends React.Component {
         console.error(error.code);
         this.setState({
           errorMessage: LoginMessages.LOGIN_ERROR,
+          setupButtonText: LoginMessages.SETUP_BUTTON,
+          isButtonDisabled: false,
         });
       });
   };
 
   setUserId = async (userId) => {
     try {
-      await AsyncStorage.setItem('userId', userId);
+      await AsyncStorage.setItem(StorageValueKeys.USER_ID, userId);
     } catch (error) {
       this.setState({
         errorMessage: LoginMessages.SETUP_ERROR,
       });
     }
+  };
+
+  renderLoginButton = () => {
+    return (
+      <TouchableOpacity
+        style={styles.loginButton}
+        onPress={this.handleLogin}
+        disabled={this.state.isButtonDisabled === true ? true : false}>
+        <Text style={styles.loginButtonText}>{this.state.setupButtonText}</Text>
+      </TouchableOpacity>
+    );
   };
 
   render() {
@@ -109,11 +135,7 @@ export default class Login extends React.Component {
           onChangeText={(userKey) => this.setState({userKey})}
           value={this.state.userKey}
         />
-        <TouchableOpacity style={styles.loginButton} onPress={this.handleLogin}>
-          <Text style={styles.loginButtonText}>
-            {this.state.setupButtonText}
-          </Text>
-        </TouchableOpacity>
+        {this.renderLoginButton()}
         {this.state.errorMessage && (
           <Text style={styles.errorMessage}>{this.state.errorMessage}</Text>
         )}

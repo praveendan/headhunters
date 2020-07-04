@@ -6,6 +6,7 @@ import {
   View,
   Image,
   TouchableOpacity,
+  ActivityIndicator,
 } from 'react-native';
 
 import {Colors} from './shared/ColourSheet';
@@ -27,6 +28,7 @@ export default class Login extends React.Component {
     loginButtonText: LoginMessages.LOG_IN_BUTTON,
     compareUser: null,
     isReadyToLogin: false,
+    isButtonDisabled: false,
   };
 
   componentDidMount() {
@@ -58,6 +60,7 @@ export default class Login extends React.Component {
   handleLogin = () => {
     this.setState({
       errorMessage: null,
+      isButtonDisabled: true,
     });
     if (this.state.userKey !== '' && this.state.userKey !== null) {
       this.setState({loginButtonText: LoginMessages.LOGGING_IN_BUTTON});
@@ -77,17 +80,23 @@ export default class Login extends React.Component {
           if (error.code === 'auth/wrong-password') {
             this.setState({
               errorMessage: 'Wrong Key',
+              isButtonDisabled: false,
             });
           } else {
             this.setState({
               errorMessage: LoginMessages.CRITICAL_ERROR,
+              isButtonDisabled: false,
             });
           }
-          this.setState({loginButtonText: LoginMessages.LOG_IN_BUTTON});
+          this.setState({
+            loginButtonText: LoginMessages.LOG_IN_BUTTON,
+            isButtonDisabled: false,
+          });
         });
     } else {
       this.setState({
         errorMessage: LoginMessages.EMPTY_USER_KEY_ERROR,
+        isButtonDisabled: false,
       });
     }
   };
@@ -123,12 +132,17 @@ export default class Login extends React.Component {
   renderLoginButton = () => {
     if (this.state.isReadyToLogin === true) {
       return (
-        <TouchableOpacity style={styles.loginButton} onPress={this.handleLogin}>
+        <TouchableOpacity
+          style={styles.loginButton}
+          onPress={this.handleLogin}
+          disabled={this.state.isButtonDisabled === true ? true : false}>
           <Text style={styles.loginButtonText}>
             {this.state.loginButtonText}
           </Text>
         </TouchableOpacity>
       );
+    } else {
+      return <ActivityIndicator size="large" color={Colors.highlight} />;
     }
   };
   render() {

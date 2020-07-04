@@ -27,7 +27,6 @@ export default function UpdatesList({route, navigation}) {
       console.log('user logged');
     } else {
       console.log('hufk');
-      navigation.navigate('Login');
     }
   });
 
