@@ -8,6 +8,18 @@ export const AppData = {
   USER_SUFFIX: '@headhuntersnz.com',
 };
 
+export const StorageValueKeys = {
+  USER_ID: 'userId',
+  IS_AUTHORIZED: 'isAuthorized',
+};
+
+export const StartupMessages = {
+  VALIDATION_ERROR: 'Error validating Magic word. Please try again later',
+  WRONG_MAGIC_WORD: 'Wrong Magic word.!',
+  SETUP_BUTTON: 'ENTER.!',
+  SETTING_UP_BUTTON: 'PLEASE WAIT..',
+};
+
 export const LoginMessages = {
   WRONG_USER_ID: 'Wrong User Id. please contact Administrator',
   INVALID_USER_KEY: 'Invalid User Key. please contact Administrator',

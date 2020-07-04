@@ -5,12 +5,21 @@ import {
   TextInput,
   View,
   TouchableOpacity,
+  ActivityIndicator,
 } from 'react-native';
 import {Colors} from './shared/ColourSheet';
+import {StorageValueKeys, StartupMessages} from './shared/Strings';
 import database from '@react-native-firebase/database';
 import AsyncStorage from '@react-native-community/async-storage';
 export default class Login extends React.Component {
-  state = {magicWord: '', errorMessage: null, compareKey: ''};
+  state = {
+    magicWord: '',
+    errorMessage: null,
+    compareKey: '',
+    isReadyToSetup: false,
+    setupButtonText: StartupMessages.SETUP_BUTTON,
+    isButtonDisabled: false,
+  };
 
   componentDidMount() {
     this.retrieveData();
@@ -22,23 +31,56 @@ export default class Login extends React.Component {
       .once('value')
       .then((snapshot) => {
         this.state.compareKey = snapshot.val();
+        if (this.state.compareKey !== null) {
+          this.setState({
+            isReadyToSetup: true,
+          });
+        }
       });
   };
 
+  renderLoginButton = () => {
+    if (this.state.isReadyToSetup === true) {
+      return (
+        <TouchableOpacity
+          style={styles.loginButton}
+          onPress={this.handleMagicWord}
+          disabled={this.state.isButtonDisabled === true ? true : false}>
+          <Text style={styles.loginButtonText}>
+            {this.state.setupButtonText}
+          </Text>
+        </TouchableOpacity>
+      );
+    } else {
+      return <ActivityIndicator size="large" color={Colors.highlight} />;
+    }
+  };
+
   handleMagicWord = async () => {
+    this.setState({
+      setupButtonText: StartupMessages.SETTING_UP_BUTTON,
+      isButtonDisabled: true,
+    });
     if (this.state.compareKey === this.state.magicWord) {
       try {
-        await AsyncStorage.setItem('isAuthorized', 'true');
+        await AsyncStorage.setItem(StorageValueKeys.IS_AUTHORIZED, 'true');
         this.props.navigation.navigate('Setup');
       } catch (error) {
         this.setState({
-          errorMessage: 'Error validating Magic word. Please try again later',
+          errorMessage: StartupMessages.VALIDATION_ERROR,
+          setupButtonText: StartupMessages.SETUP_BUTTON,
+          isButtonDisabled: false,
         });
       }
     } else {
-      this.setState({errorMessage: 'Wrong Magic word.!'});
+      this.setState({
+        errorMessage: StartupMessages.WRONG_MAGIC_WORD,
+        setupButtonText: StartupMessages.SETUP_BUTTON,
+        isButtonDisabled: false,
+      });
     }
   };
+
   render() {
     return (
       <View style={styles.container}>
@@ -50,11 +92,7 @@ export default class Login extends React.Component {
           onChangeText={(magicWord) => this.setState({magicWord})}
           value={this.state.magicWord}
         />
-        <TouchableOpacity
-          style={styles.loginButton}
-          onPress={this.handleMagicWord}>
-          <Text style={styles.loginButtonText}>Enter.!</Text>
-        </TouchableOpacity>
+        {this.renderLoginButton()}
         {this.state.errorMessage && (
           <Text style={styles.errorMessage}>{this.state.errorMessage}</Text>
         )}
