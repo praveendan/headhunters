@@ -1,19 +1,44 @@
 import React from 'react';
 import {StyleSheet, View, Image} from 'react-native';
+import OptionsMenu from 'react-native-options-menu';
 import Icon from 'react-native-vector-icons/Foundation';
+import auth from '@react-native-firebase/auth';
+import AsyncStorage from '@react-native-community/async-storage';
+
 import {Colors} from './ColourSheet';
-class TopBar extends React.Component {
-  render() {
-    return (
-      <View style={styles.container}>
-        <Image
-          style={styles.logoStyle}
-          source={require('../../img/HH_logo.png')}
-        />
-        <Icon name="list" size={30} color={Colors.light} />
-      </View>
-    );
-  }
+import {StorageValueKeys} from './Strings';
+
+export default function TopBar({route, navigation}) {
+  const myIcon = <Icon name="list" size={30} color={Colors.light} />;
+
+  var logout = () => {
+    auth().signOut();
+  };
+
+  var resetApplication = async () => {
+    try {
+      await AsyncStorage.removeItem(StorageValueKeys.USER_ID);
+      await AsyncStorage.removeItem(StorageValueKeys.IS_AUTHORIZED);
+      auth().signOut();
+    } catch (exception) {
+      console.log('error clearing data');
+    }
+  };
+
+  return (
+    <View style={styles.container}>
+      <Image
+        style={styles.logoStyle}
+        source={require('../../img/HH_logo.png')}
+      />
+      <OptionsMenu
+        customButton={myIcon}
+        destructiveIndex={0}
+        options={['Logout', 'Logout and reset App']}
+        actions={[logout, resetApplication]}
+      />
+    </View>
+  );
 }
 const styles = StyleSheet.create({
   container: {
@@ -30,4 +55,3 @@ const styles = StyleSheet.create({
     resizeMode: 'contain',
   },
 });
-export default TopBar;

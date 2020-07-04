@@ -9,7 +9,12 @@ import {
 } from 'react-native';
 
 import {Colors} from './shared/ColourSheet';
-import {Roles, AppData, LoginMessages} from './shared/Strings';
+import {
+  Roles,
+  AppData,
+  LoginMessages,
+  StorageValueKeys,
+} from './shared/Strings';
 import AsyncStorage from '@react-native-community/async-storage';
 import database from '@react-native-firebase/database';
 import auth from '@react-native-firebase/auth';
@@ -17,9 +22,9 @@ export default class Login extends React.Component {
   state = {
     userKey: '',
     errorMessage: null,
-    storedUserIdLabel: 'userId',
     storedUserId: null,
-    loginButtonText: 'LOGIN',
+    storedAuthenticationStatus: null,
+    loginButtonText: LoginMessages.LOG_IN_BUTTON,
     compareUser: null,
     isReadyToLogin: false,
   };
@@ -30,11 +35,17 @@ export default class Login extends React.Component {
 
   checkUser = async () => {
     try {
-      this.state.storedUserId = await AsyncStorage.getItem(
-        this.state.storedUserIdLabel,
+      this.state.storedAuthenticationStatus = await AsyncStorage.getItem(
+        StorageValueKeys.IS_AUTHORIZED,
       );
 
-      if (this.state.storedUserId === null) {
+      this.state.storedUserId = await AsyncStorage.getItem(
+        StorageValueKeys.USER_ID,
+      );
+
+      if (this.state.storedAuthenticationStatus === null) {
+        this.props.navigation.navigate('Startup');
+      } else if (this.state.storedUserId === null) {
         this.props.navigation.navigate('Setup');
       } else {
         this.roleChecker();
@@ -100,7 +111,7 @@ export default class Login extends React.Component {
 
   clearUserId = async () => {
     try {
-      await AsyncStorage.removeItem(this.state.storedUserIdLabel);
+      await AsyncStorage.removeItem(StorageValueKeys.USER_ID);
       this.props.navigation.navigate('Setup');
     } catch (exception) {
       this.setState({

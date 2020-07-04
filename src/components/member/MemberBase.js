@@ -13,12 +13,13 @@ import MemberHome from './MemberHome';
 import MemberUpdatesList from './MemberUpdatesListView';
 const Stack = createStackNavigator();
 
-export default function MemberBase() {
+export default function MemberBase({route, navigation}) {
   auth().onAuthStateChanged((user) => {
     if (user) {
       console.log('user loggeded');
     } else {
       console.log('hukas');
+      navigation.navigate('Login');
     }
   });
   return (

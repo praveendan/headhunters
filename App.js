@@ -31,4 +31,3 @@ export default createAppContainer(
     },
   ),
 );
-//export default App;
