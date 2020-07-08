@@ -11,7 +11,8 @@ import TopBar from '../shared/TopBar';
 import AdminHome from './AdminHome';
 import AdminMembersListView from './AdminMembersListView';
 const Stack = createStackNavigator();
-export default function MemberBase({route, navigation}) {
+
+export default function AdminBase({route, navigation}) {
   auth().onAuthStateChanged((user) => {
     if (user) {
       console.log('user loggeded');

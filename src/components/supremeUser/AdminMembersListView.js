@@ -1,4 +1,4 @@
-import React, {Component, useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import {
   Text,
   View,
@@ -9,75 +9,66 @@ import {
   Alert,
   TextInput,
   Picker,
+  ActivityIndicator,
 } from 'react-native';
+import auth from '@react-native-firebase/auth';
+import database from '@react-native-firebase/database';
+
+import {RolesDropdownList} from '../shared/Strings';
 import {Colors} from '../shared/ColourSheet';
 import ModalStyles from '../shared/Modal.style';
-
 export default function AdminMembersListView({route, navigation}) {
-  const [names, setNames] = useState([
-    {
-      id: 0,
-      name: 'Ben',
-      key: 'xxxxxxxxxxxxxx',
-      role: 'member',
-    },
-    {
-      id: 1,
-      name: 'Susan',
-      key: 'xxxxxxxxxxxxxx',
-      role: 'member',
-    },
-    {
-      id: 2,
-      name: 'Robert',
-      key: 'xxxxxxxxxxxxxx',
-      role: 'member',
-    },
-    {
-      id: 3,
-      name: 'Mary',
-      key: 'xxxxxxxxxxxxxx',
-      role: 'member',
-    },
-    {
-      id: 4,
-      name: 'Mary',
-      key: 'xxxxxxxxxxxxxx',
-      role: 'member',
-    },
-    {
-      id: 5,
-      name: 'Loren',
-      key: 'xxxxxxxxxxxxxx',
-      role: 'member',
-    },
-    {
-      id: 6,
-      name: 'Json',
-      key: 'xxxxxxxxxxxxxx',
-      role: 'member',
-    },
-    {
-      id: 7,
-      name: 'Anaz',
-      key: 'Lxxxxxxxxxxxxxxt',
-      role: 'member',
-    },
-  ]);
-
+  const [names, setNames] = useState(null);
   const [modalVisible, setModalVisible] = useState(false);
-  const [modalData, setModalData] = useState('dummy');
-  const [name, setName] = useState(null);
-  const [roles, setRoles] = useState([
-    {
-      key: 'member',
-      displayName: 'Member',
-    },
-  ]);
+  const [modalData, setModalData] = useState({});
+  const [previousModalData, setPreviousModalData] = useState({});
+  const [roles, setRoles] = useState(RolesDropdownList);
+
+  const [currentUserId, setCurrentUserId] = useState(null);
+  const [selectedName, setSelectedName] = useState(null);
+  const [selectedKey, setSelectedKey] = useState(null);
+  const [selectedRole, setSelectedRole] = useState(null);
+
+  useEffect(() => {
+    const user = auth().currentUser;
+
+    if (user) {
+      let userId = user.email.split('@')[0];
+      setCurrentUserId(userId);
+    }
+
+    database()
+      .ref('users/')
+      .once('value')
+      .then((snapshot) => {
+        console.log(snapshot.val());
+        //  this.state.compareUser = snapshot.val();
+        console.log(snapshot.val());
+        setNames(snapshot.val());
+        if (snapshot.val() === null) {
+          //   this.clearUserId();
+        } else {
+          console.log('ready nigga');
+          //   this.setState({
+          //      isReadyToLogin: true,
+          //   });
+        }
+      });
+  }, []);
 
   let showModal = (item) => {
     setModalData(item);
+    setPreviousModalData(item);
+
+    setSelectedName(item.user_name);
+    setSelectedKey(item.user_key);
+    setSelectedRole(item.user_role);
     setModalVisible(true);
+  };
+
+  let closeModal = (item) => {
+    item = previousModalData;
+    setModalVisible(!modalVisible);
   };
 
   let createTwoButtonAlert = (username) =>
@@ -95,21 +86,78 @@ export default function AdminMembersListView({route, navigation}) {
       {cancelable: false},
     );
 
+  var generateList = () => {
+    if (names !== null) {
+      return (
+        <ScrollView>
+          {names.map((item, index) => (
+            <TouchableOpacity
+              key={item.user_id}
+              style={styles.itemContainer}
+              onPress={() => {
+                showModal(item);
+              }}>
+              <Text style={styles.itemTitle}>User name: {item.user_name}</Text>
+              <Text style={styles.itemExcerpt}>Role: {item.user_role}</Text>
+            </TouchableOpacity>
+          ))}
+        </ScrollView>
+      );
+    }
+  };
+
+  var generateActivityIndicator = () => {
+    if (names === null) {
+      return <ActivityIndicator size="large" color={Colors.highlight} />;
+    }
+  };
+
+  var generateRolePicker = (userInfo) => {
+    if (currentUserId !== modalData.user_id) {
+      return (
+        <View style={ModalStyles.formInline}>
+          <Text style={ModalStyles.modalTitle}>Type</Text>
+          <Picker
+            style={ModalStyles.modalTextInput}
+            selectedValue={selectedRole}
+            onValueChange={(itemValue, _itemIndex) => {
+              setSelectedRole(itemValue);
+            }}>
+            {roles.map((item, index) => (
+              <Picker.Item
+                key={index}
+                label={item.displayName}
+                value={item.key}
+              />
+            ))}
+          </Picker>
+        </View>
+      );
+    }
+  };
+
+  var generateDeleteButton = (userInfo) => {
+    if (currentUserId !== modalData.user_id) {
+      return (
+        <TouchableOpacity
+          style={{
+            ...ModalStyles.basicButton,
+            ...styles.modalButton,
+            backgroundColor: Colors.highlight,
+          }}
+          onPress={() => {
+            createTwoButtonAlert(userInfo.user_name);
+          }}>
+          <Text style={ModalStyles.textStyle}>Delete</Text>
+        </TouchableOpacity>
+      );
+    }
+  };
+
   return (
     <View style={styles.container}>
-      <ScrollView>
-        {names.map((item, index) => (
-          <TouchableOpacity
-            key={item.id}
-            style={styles.itemContainer}
-            onPress={() => {
-              showModal(item);
-            }}>
-            <Text style={styles.itemTitle}>User name: {item.name}</Text>
-            <Text style={styles.itemExcerpt}>Role: {item.role}</Text>
-          </TouchableOpacity>
-        ))}
-      </ScrollView>
+      {generateActivityIndicator()}
+      {generateList()}
       <Modal
         animationType="slide"
         transparent={true}
@@ -122,19 +170,24 @@ export default function AdminMembersListView({route, navigation}) {
               <Text style={ModalStyles.modalTitle}>Name</Text>
               <TextInput
                 style={ModalStyles.modalTextInput}
-                value={modalData.name}
+                value={selectedName}
+                onChangeText={(itemValue) => {
+                  setSelectedName(itemValue);
+                }}
               />
             </View>
             <View style={ModalStyles.formInline}>
               <Text style={ModalStyles.modalTitle}>Key</Text>
               <TextInput
                 style={ModalStyles.modalTextInput}
-                value={modalData.key}
+                value={selectedKey}
+                onChangeText={(itemValue) => {
+                  setSelectedKey(itemValue);
+                }}
               />
             </View>
-            <View style={ModalStyles.formInline}>
-              <Text style={ModalStyles.modalTitle}>Type</Text>
-            </View>
+            {generateRolePicker(modalData)}
+
             <TouchableOpacity
               style={{
                 ...ModalStyles.basicButton,
@@ -143,21 +196,13 @@ export default function AdminMembersListView({route, navigation}) {
                 backgroundColor: Colors.dark,
               }}
               onPress={() => {
-                setModalVisible(!modalVisible);
+                closeModal(modalData);
               }}>
               <Text style={ModalStyles.textStyle}>Close</Text>
             </TouchableOpacity>
-            <TouchableOpacity
-              style={{
-                ...ModalStyles.basicButton,
-                ...styles.modalButton,
-                backgroundColor: Colors.highlight,
-              }}
-              onPress={() => {
-                createTwoButtonAlert(modalData.name);
-              }}>
-              <Text style={ModalStyles.textStyle}>Delete</Text>
-            </TouchableOpacity>
+
+            {generateDeleteButton(modalData)}
+
             <TouchableOpacity
               style={{
                 ...ModalStyles.basicButton,
