@@ -46,9 +46,17 @@ export default class Login extends React.Component {
               isButtonDisabled: false,
             });
           } else {
-            this.setUserId(this.state.userId);
-            //just log in
-            this.loginUser();
+            if (this.state.userKey !== this.state.compareUser.user_key) {
+              this.setState({
+                errorMessage: LoginMessages.INVALID_USER_KEY,
+                setupButtonText: LoginMessages.SETUP_BUTTON,
+                isButtonDisabled: false,
+              });
+            } else {
+              this.setUserId(this.state.userId);
+              //just log in
+              this.createUser();
+            }
           }
         });
     } else {
@@ -60,14 +68,13 @@ export default class Login extends React.Component {
     }
   };
 
-  loginUser = () => {
+  createUser = () => {
     auth()
-      .signInWithEmailAndPassword(
+      .createUserWithEmailAndPassword(
         this.state.userId + AppData.USER_SUFFIX,
         this.state.userKey,
       )
       .then(() => {
-        console.log(this.state.compareUser.user_role);
         if (this.state.compareUser.user_role === Roles.MEMBER) {
           this.props.navigation.navigate('MemberBase');
         } else if (this.state.compareUser.user_role === Roles.SUPREME_USER) {
@@ -75,8 +82,33 @@ export default class Login extends React.Component {
         }
       })
       .catch((error) => {
-        console.log(error.message);
-        console.error(error.code);
+        //return error.code;
+        if (error.code === 'auth/email-already-in-use') {
+          this.login();
+        } else {
+          this.setState({
+            errorMessage: LoginMessages.LOGIN_ERROR,
+            setupButtonText: LoginMessages.SETUP_BUTTON,
+            isButtonDisabled: false,
+          });
+        }
+      });
+  };
+
+  login = () => {
+    auth()
+      .signInWithEmailAndPassword(
+        this.state.userId + AppData.USER_SUFFIX,
+        this.state.userKey,
+      )
+      .then(() => {
+        if (this.state.compareUser.user_role === Roles.MEMBER) {
+          this.props.navigation.navigate('MemberBase');
+        } else if (this.state.compareUser.user_role === Roles.SUPREME_USER) {
+          this.props.navigation.navigate('AdminBase');
+        }
+      })
+      .catch((error) => {
         if (error.code === 'auth/wrong-password') {
           this.setState({
             errorMessage: LoginMessages.INVALID_USER_KEY,
