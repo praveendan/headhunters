@@ -57,9 +57,8 @@ export default {
     borderTopColor: Colors.gray,
     borderLeftColor: Colors.light,
     borderRightColor: Colors.light,
-    padding: 5,
     borderWidth: 1,
-    height: 60,
+    height: 50,
   },
   modalTitle: {
     textAlign: 'left',
