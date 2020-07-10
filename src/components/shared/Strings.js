@@ -52,8 +52,13 @@ export const LocalizedEventsGroups = {
 export const AdminMemberListMessages = {
   MEMBER_ID_INVALID_ERROR: 'Member Id cannot contain special characters',
   MEMBER_ID_EXISTS_ERROR: 'Member Id already exists',
-  MEMBER_KEY_LENGTH_ERROR: 'Key length should not be less than 6 characters',
+  MEMBER_KEY_LENGTH_ERROR: 'Key length should not be less than 6 character',
   EMPTY_FIELDS_ERROR: 'Please fill up all the fields',
   SAVED_SUCCESS: 'Saved successfully',
   SAVE_ERROR: 'Error saving. Please try again later',
+};
+
+export const SaveButtonText = {
+  SAVE: 'Save',
+  SAVING: 'Saving..',
 };

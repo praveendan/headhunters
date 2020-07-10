@@ -20,6 +20,7 @@ import {
   RolesDropdownList,
   AdminMemberListMessages,
   LocalizedEventsGroups,
+  SaveButtonText,
 } from '../shared/Strings';
 import {Colors} from '../shared/ColourSheet';
 import ModalStyles from '../shared/Modal.style';
@@ -40,6 +41,8 @@ export default function AdminMembersListView({route, navigation}) {
   const [errorMessage, setErrorMessage] = useState('');
   const [successMessage, setSuccessMessage] = useState('');
   const [addUserModalVisible, setAddUserModalVisible] = useState(false);
+
+  const [saveButtonText, setSaveButtonText] = useState(SaveButtonText.SAVE);
 
   useEffect(() => {
     const user = auth().currentUser;
@@ -184,6 +187,7 @@ export default function AdminMembersListView({route, navigation}) {
     } else if (selectedKey.length < 6) {
       setErrorMessage(AdminMemberListMessages.MEMBER_KEY_LENGTH_ERROR);
     } else {
+      setSaveButtonText(SaveButtonText.SAVING);
       database()
         .ref('users/' + selectedId)
         .once('value')
@@ -204,8 +208,16 @@ export default function AdminMembersListView({route, navigation}) {
               .then(() => {
                 setSuccessMessage(AdminMemberListMessages.SAVED_SUCCESS);
                 loadUsers();
+              })
+              .catch((error) => {})
+              .finally(() => {
+                setSaveButtonText(SaveButtonText.SAVE);
               });
           }
+        })
+        .catch((error) => {})
+        .finally(() => {
+          setSaveButtonText(SaveButtonText.SAVE);
         });
     }
   };
@@ -294,7 +306,7 @@ export default function AdminMembersListView({route, navigation}) {
               onPress={() => {
                 addMember();
               }}>
-              <Text style={ModalStyles.textStyle}>Save</Text>
+              <Text style={ModalStyles.textStyle}>{saveButtonText}</Text>
             </TouchableOpacity>
           </View>
         </View>
@@ -361,7 +373,7 @@ export default function AdminMembersListView({route, navigation}) {
                 backgroundColor: Colors.dark,
               }}
               onPress={() => {}}>
-              <Text style={ModalStyles.textStyle}>Save</Text>
+              <Text style={ModalStyles.textStyle}>{saveButtonText}</Text>
             </TouchableOpacity>
           </View>
         </View>
