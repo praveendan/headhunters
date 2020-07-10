@@ -21,6 +21,7 @@ import {
   AdminMemberListMessages,
   LocalizedEventsGroups,
   SaveButtonText,
+  DeleteButtonText,
 } from '../shared/Strings';
 import {Colors} from '../shared/ColourSheet';
 import ModalStyles from '../shared/Modal.style';
@@ -43,6 +44,9 @@ export default function AdminMembersListView({route, navigation}) {
   const [addUserModalVisible, setAddUserModalVisible] = useState(false);
 
   const [saveButtonText, setSaveButtonText] = useState(SaveButtonText.SAVE);
+  const [deleteButtonText, setDeleteButtonText] = useState(
+    DeleteButtonText.DELETE,
+  );
 
   useEffect(() => {
     const user = auth().currentUser;
@@ -57,8 +61,7 @@ export default function AdminMembersListView({route, navigation}) {
   let loadUsers = () => {
     database()
       .ref('users/')
-      .once('value')
-      .then((snapshot) => {
+      .on('value', (snapshot) => {
         setNames(snapshot.val());
         if (snapshot.val() === null) {
           //   this.clearUserId();
@@ -78,6 +81,7 @@ export default function AdminMembersListView({route, navigation}) {
     setModalData(item);
     setPreviousModalData(item);
 
+    setSelectedId(item.user_id);
     setSelectedName(item.user_name);
     setSelectedKey(item.user_key);
     setSelectedRole(item.user_role);
@@ -88,38 +92,64 @@ export default function AdminMembersListView({route, navigation}) {
     item = previousModalData;
     setModalVisible(!modalVisible);
     clearSelectedState();
+    setErrorMessage('');
+    setSuccessMessage('');
   };
 
-  let createTwoButtonAlert = (username) =>
+  let createTwoButtonAlert = (username) => {
     Alert.alert(
       'Confirmation',
       'Are you sure that you want to  remove ' + username + '?',
       [
         {
           text: 'Cancel',
-          onPress: () => console.log('Cancel Pressed'),
+          onPress: () => {},
           style: 'cancel',
         },
-        {text: 'OK', onPress: () => console.log('OK Pressed')},
+        {text: 'OK', onPress: () => deleteUser()},
       ],
       {cancelable: false},
     );
+  };
+
+  var deleteUser = async () => {
+    setDeleteButtonText(DeleteButtonText.DELETING);
+    await database()
+      .ref('/users/' + selectedId)
+      .remove()
+      .then(() => {
+        setSuccessMessage(AdminMemberListMessages.DELETE_SUCCESS);
+      })
+      .catch((_error) => {
+        setErrorMessage(AdminMemberListMessages.DELETE_ERROR);
+      })
+      .finally(() => {
+        setDeleteButtonText(DeleteButtonText.DELETE);
+        clearSelectedState();
+      });
+  };
 
   var generateList = () => {
     if (names !== null) {
       return (
         <ScrollView>
-          {names.map((item, index) => (
-            <TouchableOpacity
-              key={item.user_id}
-              style={styles.itemContainer}
-              onPress={() => {
-                showModal(item);
-              }}>
-              <Text style={styles.itemTitle}>User name: {item.user_name}</Text>
-              <Text style={styles.itemExcerpt}>Role: {item.user_role}</Text>
-            </TouchableOpacity>
-          ))}
+          {names.map((item, index) => {
+            if (item !== null) {
+              return (
+                <TouchableOpacity
+                  key={item.user_id}
+                  style={styles.itemContainer}
+                  onPress={() => {
+                    showModal(item);
+                  }}>
+                  <Text style={styles.itemTitle}>
+                    User name: {item.user_name}
+                  </Text>
+                  <Text style={styles.itemExcerpt}>Role: {item.user_role}</Text>
+                </TouchableOpacity>
+              );
+            }
+          })}
         </ScrollView>
       );
     }
@@ -150,7 +180,7 @@ export default function AdminMembersListView({route, navigation}) {
   };
 
   var generateDeleteButton = (userInfo) => {
-    if (currentUserId !== modalData.user_id) {
+    if (currentUserId !== modalData.user_id && selectedId !== '') {
       return (
         <TouchableOpacity
           style={{
@@ -161,7 +191,7 @@ export default function AdminMembersListView({route, navigation}) {
           onPress={() => {
             createTwoButtonAlert(userInfo.user_name);
           }}>
-          <Text style={ModalStyles.textStyle}>Delete</Text>
+          <Text style={ModalStyles.textStyle}>{deleteButtonText}</Text>
         </TouchableOpacity>
       );
     }
@@ -207,13 +237,43 @@ export default function AdminMembersListView({route, navigation}) {
               })
               .then(() => {
                 setSuccessMessage(AdminMemberListMessages.SAVED_SUCCESS);
-                loadUsers();
               })
               .catch((error) => {})
               .finally(() => {
                 setSaveButtonText(SaveButtonText.SAVE);
               });
           }
+        })
+        .catch((error) => {})
+        .finally(() => {
+          setSaveButtonText(SaveButtonText.SAVE);
+        });
+    }
+  };
+
+  var updateMember = () => {
+
+    setErrorMessage('');
+    setSuccessMessage('');
+
+    if (selectedId === '' || selectedKey === '' || selectedName === '') {
+      setErrorMessage(AdminMemberListMessages.EMPTY_FIELDS_ERROR);
+    } else if (selectedKey.length < 6) {
+      setErrorMessage(AdminMemberListMessages.MEMBER_KEY_LENGTH_ERROR);
+    } else {
+      setSaveButtonText(SaveButtonText.SAVING);
+      const newReference = database().ref('/users');
+      newReference
+        .child(selectedId)
+        .update({
+          region: LocalizedEventsGroups.GLOBAL,
+          user_id: selectedId,
+          user_key: selectedKey,
+          user_name: selectedName,
+          user_role: selectedRole,
+        })
+        .then(() => {
+          setSuccessMessage(AdminMemberListMessages.SAVED_SUCCESS);
         })
         .catch((error) => {})
         .finally(() => {
@@ -340,15 +400,15 @@ export default function AdminMembersListView({route, navigation}) {
             </View>
             <View style={ModalStyles.formInline}>
               <Text style={ModalStyles.modalTitle}>Key</Text>
-              <TextInput
-                style={ModalStyles.modalTextInput}
-                value={selectedKey}
-                onChangeText={(itemValue) => {
-                  setSelectedKey(itemValue);
-                }}
-              />
+              <Text style={ModalStyles.modalFormInlineText}>{selectedKey}</Text>
             </View>
             {generateRolePicker(modalData)}
+            {errorMessage !== '' && (
+              <Text style={styles.errorMessage}>{errorMessage}</Text>
+            )}
+            {successMessage !== '' && (
+              <Text style={styles.successMessage}>{successMessage}</Text>
+            )}
 
             <TouchableOpacity
               style={{
@@ -364,17 +424,20 @@ export default function AdminMembersListView({route, navigation}) {
             </TouchableOpacity>
 
             {generateDeleteButton(modalData)}
-
-            <TouchableOpacity
-              style={{
-                ...ModalStyles.basicButton,
-                ...ModalStyles.openButton,
-                ...styles.modalButton,
-                backgroundColor: Colors.dark,
-              }}
-              onPress={() => {}}>
-              <Text style={ModalStyles.textStyle}>{saveButtonText}</Text>
-            </TouchableOpacity>
+            {selectedId !== '' && (
+              <TouchableOpacity
+                style={{
+                  ...ModalStyles.basicButton,
+                  ...ModalStyles.openButton,
+                  ...styles.modalButton,
+                  backgroundColor: Colors.dark,
+                }}
+                onPress={() => {
+                  updateMember();
+                }}>
+                <Text style={ModalStyles.textStyle}>{saveButtonText}</Text>
+              </TouchableOpacity>
+            )}
           </View>
         </View>
       </Modal>

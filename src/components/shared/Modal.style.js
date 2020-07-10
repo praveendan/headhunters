@@ -66,6 +66,12 @@ export default {
     fontSize: 20,
     marginTop: 10,
   },
+  modalFormInlineText: {
+    width: '60%',
+    height: 50,
+    marginTop: 10,
+    fontSize: 20,
+  },
   modalTextInput: {
     width: '60%',
     textAlignVertical: 'top',

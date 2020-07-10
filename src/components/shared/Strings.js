@@ -56,9 +56,16 @@ export const AdminMemberListMessages = {
   EMPTY_FIELDS_ERROR: 'Please fill up all the fields',
   SAVED_SUCCESS: 'Saved successfully',
   SAVE_ERROR: 'Error saving. Please try again later',
+  DELETE_SUCCESS: 'User deleted successfully. Please close the modal',
+  DELETE_ERROR: 'Error deleting. Please close the modal and retry',
 };
 
 export const SaveButtonText = {
   SAVE: 'Save',
   SAVING: 'Saving..',
+};
+
+export const DeleteButtonText = {
+  DELETE: 'Delete',
+  DELETING: 'Deleting..',
 };
