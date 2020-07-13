@@ -9,7 +9,6 @@ import {
   TextInput,
   ActivityIndicator,
 } from 'react-native';
-
 import database from '@react-native-firebase/database';
 import Icon from 'react-native-vector-icons/Foundation';
 import {
@@ -23,19 +22,16 @@ import ModalStyles from '../shared/Modal.style';
 export default function AdminMembersListView({route, navigation}) {
   const [news, setNews] = useState([]);
   const [modalVisible, setModalVisible] = useState(false);
-
   const [selectedId, setSelectedId] = useState('');
   const [selectedTitle, setSelectedTitle] = useState('');
   const [selectedNewsDescription, setSelectedNewsDescription] = useState('');
-
   const [errorMessage, setErrorMessage] = useState('');
   const [successMessage, setSuccessMessage] = useState('');
-
   const [sendButtonText, setSendButtonText] = useState(
     SendMessageButtonText.SEND,
   );
-
   const [numberOfNews, setNumberOfNews] = useState(0);
+  const queryString = 'events/' + LocalizedEventsGroups.GLOBAL + '/';
 
   useEffect(() => {
     loadNews();
@@ -43,7 +39,7 @@ export default function AdminMembersListView({route, navigation}) {
 
   let loadNews = () => {
     database()
-      .ref('news/' + LocalizedEventsGroups.GLOBAL)
+      .ref(queryString)
       .limitToLast(Constants.NEWS_SHOW_LIMIT)
       .on('value', (snapshot) => {
         if (snapshot.val() === null) {
@@ -60,17 +56,14 @@ export default function AdminMembersListView({route, navigation}) {
         }
       });
   };
-
   let showModal = (item) => {
     if (item !== null) {
       setSelectedId(item.id);
       setSelectedTitle(item.name);
       setSelectedNewsDescription(item.description);
     }
-
     setModalVisible(true);
   };
-
   let closeModal = () => {
     setSelectedId('');
     setSelectedTitle('');
@@ -79,7 +72,6 @@ export default function AdminMembersListView({route, navigation}) {
     setErrorMessage('');
     setModalVisible(!modalVisible);
   };
-
   var getExcerpt = (string) => {
     if (string.length > 100) {
       return string.substring(0, 100) + '...  Read more';
@@ -87,7 +79,6 @@ export default function AdminMembersListView({route, navigation}) {
       return string;
     }
   };
-
   var sendMessage = () => {
     if (selectedNewsDescription !== '' && selectedTitle !== '') {
       setSendButtonText(SendMessageButtonText.SENDING);
@@ -102,12 +93,8 @@ export default function AdminMembersListView({route, navigation}) {
       setErrorMessage(AdminNewsListMessages.EMPTY_FIELDS_ERROR);
     }
   };
-
   var addNewNews = () => {
-    var dbRef = database()
-      .ref('news/' + LocalizedEventsGroups.GLOBAL)
-      .push();
-
+    var dbRef = database().ref(queryString).push();
     dbRef
       .update({
         date: '01/01/2020',
@@ -123,17 +110,16 @@ export default function AdminMembersListView({route, navigation}) {
       .catch((_error) => {
         setErrorMessage(AdminNewsListMessages.SAVE_ERROR);
         database()
-          .ref('news/' + LocalizedEventsGroups.GLOBAL + '/' + dbRef.key)
+          .ref(queryString + dbRef.key)
           .remove();
       })
       .finally(() => {
         setSendButtonText(SendMessageButtonText.SEND);
       });
   };
-
   var updateNews = () => {
     database()
-      .ref('news/' + LocalizedEventsGroups.GLOBAL + '/' + selectedId)
+      .ref(queryString + selectedId)
       .update({
         date: '01/01/2020',
         description: selectedNewsDescription,
@@ -151,11 +137,10 @@ export default function AdminMembersListView({route, navigation}) {
         setSendButtonText(SendMessageButtonText.SEND);
       });
   };
-
   var deleteOldestNews = () => {
-    if (Constants.NEWS_LIMIT <= numberOfNews) {
+    if (Constants.EVENTS_LIMIT <= numberOfNews) {
       let dbInstance = database();
-      let queryString = 'news/' + LocalizedEventsGroups.GLOBAL + '/';
+
       dbInstance
         .ref(queryString)
         .limitToFirst(1)
@@ -166,7 +151,6 @@ export default function AdminMembersListView({route, navigation}) {
         });
     }
   };
-
   var generateList = () => {
     if (news !== null) {
       return (
@@ -192,7 +176,6 @@ export default function AdminMembersListView({route, navigation}) {
       );
     }
   };
-
   return (
     <View style={styles.container}>
       {news === null && (
@@ -206,7 +189,7 @@ export default function AdminMembersListView({route, navigation}) {
         onRequestClose={() => {}}>
         <View style={ModalStyles.centeredView}>
           <View style={ModalStyles.modalView}>
-            <Text style={ModalStyles.modalHeading}>News update</Text>
+            <Text style={ModalStyles.modalHeading}>Event update</Text>
             <View style={ModalStyles.formInline}>
               <Text style={ModalStyles.modalTitle}>Title</Text>
               <TextInput
@@ -237,7 +220,6 @@ export default function AdminMembersListView({route, navigation}) {
             {successMessage !== '' && (
               <Text style={ModalStyles.successMessage}>{successMessage}</Text>
             )}
-
             <TouchableOpacity
               style={{
                 ...ModalStyles.basicButton,
@@ -263,7 +245,6 @@ export default function AdminMembersListView({route, navigation}) {
           </View>
         </View>
       </Modal>
-
       <TouchableOpacity
         style={styles.floatingButton}
         onPress={() => {

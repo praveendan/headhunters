@@ -23,6 +23,10 @@ export default function MemberHome({route, navigation}) {
     navigation.navigate('AdminNewsListView');
   };
 
+  var openEvents = () => {
+    navigation.navigate('AdminEventsListView');
+  };
+
   return (
     <View style={CommonStyles.container}>
       <View style={CommonStyles.viewContainer}>
@@ -44,7 +48,7 @@ export default function MemberHome({route, navigation}) {
             </Text>
           </View>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.viewContainerItem}>
+        <TouchableOpacity style={styles.viewContainerItem} onPress={openEvents}>
           <View style={styles.viewContainerItemMain}>
             <Text style={styles.viewContainerItemHeading}>EVENTS</Text>
             <Text style={styles.viewContainerItemSubHeading}>

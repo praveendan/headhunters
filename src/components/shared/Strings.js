@@ -22,8 +22,7 @@ export const AppData = {
 export const Constants = {
   NEWS_LIMIT: 7,
   NEWS_SHOW_LIMIT: 20,
-  EVENTS_LIMIT: 100,
-
+  EVENTS_LIMIT: 7,
 };
 
 export const StorageValueKeys = {

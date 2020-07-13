@@ -11,6 +11,7 @@ import TopBar from '../shared/TopBar';
 import AdminHome from './AdminHome';
 import AdminMembersListView from './AdminMembersListView';
 import AdminNewsListView from './AdminNewsListView';
+import AdminEventsListView from './AdminEventsListView';
 const Stack = createStackNavigator();
 
 export default function AdminBase({route, navigation}) {
@@ -18,7 +19,6 @@ export default function AdminBase({route, navigation}) {
     if (user) {
       console.log('user loggeded');
     } else {
-      console.log('hukas');
       navigation.navigate('Login');
     }
   });
@@ -42,6 +42,13 @@ export default function AdminBase({route, navigation}) {
         <Stack.Screen
           name="AdminNewsListView"
           component={AdminNewsListView}
+          options={{
+            cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS,
+          }}
+        />
+        <Stack.Screen
+          name="AdminEventsListView"
+          component={AdminEventsListView}
           options={{
             cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS,
           }}
