@@ -10,6 +10,7 @@ import {Colors} from '../shared/ColourSheet';
 import TopBar from '../shared/TopBar';
 import AdminHome from './AdminHome';
 import AdminMembersListView from './AdminMembersListView';
+import AdminNewsListView from './AdminNewsListView';
 const Stack = createStackNavigator();
 
 export default function AdminBase({route, navigation}) {
@@ -34,6 +35,13 @@ export default function AdminBase({route, navigation}) {
         <Stack.Screen
           name="AdminMembersListView"
           component={AdminMembersListView}
+          options={{
+            cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS,
+          }}
+        />
+        <Stack.Screen
+          name="AdminNewsListView"
+          component={AdminNewsListView}
           options={{
             cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS,
           }}

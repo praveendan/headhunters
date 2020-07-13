@@ -19,6 +19,10 @@ export default function MemberHome({route, navigation}) {
     navigation.navigate('AdminMembersListView');
   };
 
+  var openNews = () => {
+    navigation.navigate('AdminNewsListView');
+  };
+
   return (
     <View style={CommonStyles.container}>
       <View style={CommonStyles.viewContainer}>
@@ -32,7 +36,7 @@ export default function MemberHome({route, navigation}) {
             </Text>
           </View>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.viewContainerItem}>
+        <TouchableOpacity style={styles.viewContainerItem} onPress={openNews}>
           <View style={styles.viewContainerItemMain}>
             <Text style={styles.viewContainerItemHeading}>NEWS</Text>
             <Text style={styles.viewContainerItemSubHeading}>

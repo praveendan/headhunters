@@ -14,7 +14,6 @@ import {
 import auth from '@react-native-firebase/auth';
 import database from '@react-native-firebase/database';
 import Icon from 'react-native-vector-icons/Foundation';
-
 import {
   Roles,
   RolesDropdownList,
@@ -25,39 +24,32 @@ import {
 } from '../shared/Strings';
 import {Colors} from '../shared/ColourSheet';
 import ModalStyles from '../shared/Modal.style';
-
 export default function AdminMembersListView({route, navigation}) {
   const [names, setNames] = useState(null);
   const [modalVisible, setModalVisible] = useState(false);
   const [modalData, setModalData] = useState({});
   const [previousModalData, setPreviousModalData] = useState({});
   const [roles, setRoles] = useState(RolesDropdownList);
-
   const [currentUserId, setCurrentUserId] = useState(null);
   const [selectedName, setSelectedName] = useState('');
   const [selectedKey, setSelectedKey] = useState('');
   const [selectedRole, setSelectedRole] = useState('');
   const [selectedId, setSelectedId] = useState('');
-
   const [errorMessage, setErrorMessage] = useState('');
   const [successMessage, setSuccessMessage] = useState('');
   const [addUserModalVisible, setAddUserModalVisible] = useState(false);
-
   const [saveButtonText, setSaveButtonText] = useState(SaveButtonText.SAVE);
   const [deleteButtonText, setDeleteButtonText] = useState(
     DeleteButtonText.DELETE,
   );
-
   useEffect(() => {
     const user = auth().currentUser;
-
     if (user) {
       let userId = user.email.split('@')[0];
       setCurrentUserId(userId);
     }
     loadUsers();
   }, []);
-
   let loadUsers = () => {
     database()
       .ref('users/')
@@ -69,25 +61,21 @@ export default function AdminMembersListView({route, navigation}) {
         }
       });
   };
-
   let clearSelectedState = () => {
     setSelectedName('');
     setSelectedKey('');
     setSelectedId('');
     setSelectedRole(Roles.MEMBER);
   };
-
   let showModal = (item) => {
     setModalData(item);
     setPreviousModalData(item);
-
     setSelectedId(item.user_id);
     setSelectedName(item.user_name);
     setSelectedKey(item.user_key);
     setSelectedRole(item.user_role);
     setModalVisible(true);
   };
-
   let closeModal = (item) => {
     item = previousModalData;
     setModalVisible(!modalVisible);
@@ -95,7 +83,6 @@ export default function AdminMembersListView({route, navigation}) {
     setErrorMessage('');
     setSuccessMessage('');
   };
-
   let createTwoButtonAlert = (username) => {
     Alert.alert(
       'Confirmation',
@@ -111,7 +98,6 @@ export default function AdminMembersListView({route, navigation}) {
       {cancelable: false},
     );
   };
-
   var deleteUser = async () => {
     setDeleteButtonText(DeleteButtonText.DELETING);
     await database()
@@ -128,7 +114,6 @@ export default function AdminMembersListView({route, navigation}) {
         clearSelectedState();
       });
   };
-
   var generateList = () => {
     if (names !== null) {
       return (
@@ -154,7 +139,6 @@ export default function AdminMembersListView({route, navigation}) {
       );
     }
   };
-
   var generateRolePicker = (userInfo) => {
     if (currentUserId !== modalData.user_id) {
       return (
@@ -178,7 +162,6 @@ export default function AdminMembersListView({route, navigation}) {
       );
     }
   };
-
   var generateDeleteButton = (userInfo) => {
     if (currentUserId !== modalData.user_id && selectedId !== '') {
       return (
@@ -196,22 +179,18 @@ export default function AdminMembersListView({route, navigation}) {
       );
     }
   };
-
   var openAddUserModal = () => {
     clearSelectedState();
     setAddUserModalVisible(true);
   };
-
   var closeAddUserModal = () => {
     setErrorMessage('');
     setSuccessMessage('');
     setAddUserModalVisible(!addUserModalVisible);
   };
-
   var addMember = () => {
     setErrorMessage('');
     setSuccessMessage('');
-
     if (selectedId === '' || selectedKey === '' || selectedName === '') {
       setErrorMessage(AdminMemberListMessages.EMPTY_FIELDS_ERROR);
     } else if (selectedKey.length < 6) {
@@ -250,12 +229,9 @@ export default function AdminMembersListView({route, navigation}) {
         });
     }
   };
-
   var updateMember = () => {
-
     setErrorMessage('');
     setSuccessMessage('');
-
     if (selectedId === '' || selectedKey === '' || selectedName === '') {
       setErrorMessage(AdminMemberListMessages.EMPTY_FIELDS_ERROR);
     } else if (selectedKey.length < 6) {
@@ -281,7 +257,6 @@ export default function AdminMembersListView({route, navigation}) {
         });
     }
   };
-
   var generateAddUserModal = () => {
     return (
       <Modal
@@ -342,7 +317,6 @@ export default function AdminMembersListView({route, navigation}) {
             {successMessage !== '' && (
               <Text style={styles.successMessage}>{successMessage}</Text>
             )}
-
             <TouchableOpacity
               style={{
                 ...ModalStyles.basicButton,
@@ -355,7 +329,6 @@ export default function AdminMembersListView({route, navigation}) {
               }}>
               <Text style={ModalStyles.textStyle}>Close</Text>
             </TouchableOpacity>
-
             <TouchableOpacity
               style={{
                 ...ModalStyles.basicButton,
@@ -373,7 +346,6 @@ export default function AdminMembersListView({route, navigation}) {
       </Modal>
     );
   };
-
   return (
     <View style={styles.container}>
       {names === null && (
@@ -409,7 +381,6 @@ export default function AdminMembersListView({route, navigation}) {
             {successMessage !== '' && (
               <Text style={styles.successMessage}>{successMessage}</Text>
             )}
-
             <TouchableOpacity
               style={{
                 ...ModalStyles.basicButton,
@@ -422,7 +393,6 @@ export default function AdminMembersListView({route, navigation}) {
               }}>
               <Text style={ModalStyles.textStyle}>Close</Text>
             </TouchableOpacity>
-
             {generateDeleteButton(modalData)}
             {selectedId !== '' && (
               <TouchableOpacity
@@ -441,9 +411,7 @@ export default function AdminMembersListView({route, navigation}) {
           </View>
         </View>
       </Modal>
-
       {generateAddUserModal()}
-
       <TouchableOpacity
         style={styles.floatingButton}
         onPress={() => {

@@ -60,6 +60,15 @@ export default {
     borderWidth: 1,
     height: 50,
   },
+  formInlineMultiline: {
+    flexDirection: 'row',
+    borderBottomColor: Colors.gray,
+    borderTopColor: Colors.gray,
+    borderLeftColor: Colors.light,
+    borderRightColor: Colors.light,
+    borderWidth: 1,
+    height: '50%',
+  },
   modalTitle: {
     textAlign: 'left',
     width: '40%',
@@ -77,5 +86,16 @@ export default {
     textAlignVertical: 'top',
     height: 50,
     fontSize: 20,
+  },
+  modalfullWidthMultilineTextInput: {
+    width: '100%',
+    textAlignVertical: 'top',
+    height: '100%',
+  },
+  errorMessage: {
+    color: Colors.highlight,
+  },
+  successMessage: {
+    color: Colors.dark,
   },
 };
