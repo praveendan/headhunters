@@ -30,6 +30,24 @@ export default {
     position: 'absolute',
     bottom: 20,
   },
+  bottomButtonContainer: {
+    width: '100%',
+    height: 40,
+  },
+  basicButtonRelative: {
+    borderRadius: 5,
+    width: '50%',
+    padding: 10,
+    elevation: 2,
+  },
+  openButtonRelative: {
+    position: 'absolute',
+    right: 0,
+  },
+  closeButtonRelative: {
+    position: 'absolute',
+    left: 0,
+  },
   openButton: {
     right: 20,
   },
@@ -67,7 +85,7 @@ export default {
     borderLeftColor: Colors.light,
     borderRightColor: Colors.light,
     borderWidth: 1,
-    height: '50%',
+    flex: 1,
   },
   modalTitle: {
     textAlign: 'left',
@@ -96,7 +114,6 @@ export default {
   modalfullWidthMultilineTextInput: {
     width: '100%',
     textAlignVertical: 'top',
-    height: '100%',
   },
   errorMessage: {
     color: Colors.highlight,

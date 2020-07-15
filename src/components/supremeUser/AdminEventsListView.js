@@ -334,28 +334,30 @@ export default function AdminMembersListView({route, navigation}) {
             {successMessage !== '' && (
               <Text style={ModalStyles.successMessage}>{successMessage}</Text>
             )}
-            <TouchableOpacity
-              style={{
-                ...ModalStyles.basicButton,
-                ...ModalStyles.closeButton,
-                backgroundColor: Colors.highlight,
-              }}
-              onPress={() => {
-                closeModal();
-              }}>
-              <Text style={ModalStyles.textStyle}>Close</Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={{
-                ...ModalStyles.basicButton,
-                ...ModalStyles.openButton,
-                backgroundColor: Colors.dark,
-              }}
-              onPress={() => {
-                sendMessage();
-              }}>
-              <Text style={ModalStyles.textStyle}>{sendButtonText}</Text>
-            </TouchableOpacity>
+            <View style={ModalStyles.bottomButtonContainer}>
+              <TouchableOpacity
+                style={{
+                  ...ModalStyles.basicButtonRelative,
+                  ...ModalStyles.closeButtonRelative,
+                  backgroundColor: Colors.highlight,
+                }}
+                onPress={() => {
+                  closeModal();
+                }}>
+                <Text style={ModalStyles.textStyle}>Close</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={{
+                  ...ModalStyles.basicButtonRelative,
+                  ...ModalStyles.openButtonRelative,
+                  backgroundColor: Colors.dark,
+                }}
+                onPress={() => {
+                  sendMessage();
+                }}>
+                <Text style={ModalStyles.textStyle}>{sendButtonText}</Text>
+              </TouchableOpacity>
+            </View>
           </View>
         </View>
       </Modal>
