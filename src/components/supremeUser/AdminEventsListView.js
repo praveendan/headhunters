@@ -8,9 +8,12 @@ import {
   Modal,
   TextInput,
   ActivityIndicator,
+  Platform,
 } from 'react-native';
 import database from '@react-native-firebase/database';
 import Icon from 'react-native-vector-icons/Foundation';
+import DateTimePicker from '@react-native-community/datetimepicker';
+
 import {
   LocalizedEventsGroups,
   SendMessageButtonText,
@@ -32,6 +35,13 @@ export default function AdminMembersListView({route, navigation}) {
   );
   const [numberOfNews, setNumberOfNews] = useState(0);
   const queryString = 'events/' + LocalizedEventsGroups.GLOBAL + '/';
+
+  const [mode, setMode] = useState('date');
+  const [show, setShow] = useState(false);
+  const [showEndDate, setShowEndDate] = useState(false);
+
+  const [startDate, setStartDate] = useState(new Date());
+  const [endDate, setEndDate] = useState(new Date());
 
   useEffect(() => {
     loadNews();
@@ -56,14 +66,18 @@ export default function AdminMembersListView({route, navigation}) {
         }
       });
   };
+
   let showModal = (item) => {
     if (item !== null) {
       setSelectedId(item.id);
       setSelectedTitle(item.name);
       setSelectedNewsDescription(item.description);
+      setStartDate(new Date(item.start_date));
+      setEndDate(new Date(item.end_date));
     }
     setModalVisible(true);
   };
+
   let closeModal = () => {
     setSelectedId('');
     setSelectedTitle('');
@@ -72,6 +86,7 @@ export default function AdminMembersListView({route, navigation}) {
     setErrorMessage('');
     setModalVisible(!modalVisible);
   };
+
   var getExcerpt = (string) => {
     if (string.length > 100) {
       return string.substring(0, 100) + '...  Read more';
@@ -79,6 +94,7 @@ export default function AdminMembersListView({route, navigation}) {
       return string;
     }
   };
+
   var sendMessage = () => {
     if (selectedNewsDescription !== '' && selectedTitle !== '') {
       setSendButtonText(SendMessageButtonText.SENDING);
@@ -93,15 +109,17 @@ export default function AdminMembersListView({route, navigation}) {
       setErrorMessage(AdminNewsListMessages.EMPTY_FIELDS_ERROR);
     }
   };
+
   var addNewNews = () => {
     var dbRef = database().ref(queryString).push();
     dbRef
       .update({
-        date: '01/01/2020',
+        start_date: startDate.toString(),
+        end_date: endDate.toString(),
         description: selectedNewsDescription,
         id: dbRef.key,
         name: selectedTitle,
-        // timestamp: new Date().getTime(),
+        timestamp: new Date().getTime(),
       })
       .then(() => {
         setSuccessMessage(AdminNewsListMessages.SAVED_SUCCESS);
@@ -117,15 +135,16 @@ export default function AdminMembersListView({route, navigation}) {
         setSendButtonText(SendMessageButtonText.SEND);
       });
   };
+
   var updateNews = () => {
     database()
       .ref(queryString + selectedId)
       .update({
-        date: '01/01/2020',
         description: selectedNewsDescription,
         name: selectedTitle,
-        // id: selectedId,
-        // timestamp: new Date().getTime(),
+        start_date: startDate.toString(),
+        end_date: endDate.toString(),
+        timestamp: new Date().getTime(),
       })
       .then(() => {
         setSuccessMessage(AdminNewsListMessages.SAVED_SUCCESS);
@@ -137,6 +156,7 @@ export default function AdminMembersListView({route, navigation}) {
         setSendButtonText(SendMessageButtonText.SEND);
       });
   };
+
   var deleteOldestNews = () => {
     if (Constants.EVENTS_LIMIT <= numberOfNews) {
       let dbInstance = database();
@@ -151,6 +171,7 @@ export default function AdminMembersListView({route, navigation}) {
         });
     }
   };
+
   var generateList = () => {
     if (news !== null) {
       return (
@@ -176,6 +197,53 @@ export default function AdminMembersListView({route, navigation}) {
       );
     }
   };
+
+  const onDateChange = (event, selectedDate) => {
+    const currentDate = selectedDate || startDate;
+    setShow(Platform.OS === 'ios');
+    setStartDate(currentDate);
+  };
+
+  const onEndDateChange = (event, selectedDate) => {
+    const currentDate = selectedDate || endDate;
+    setShowEndDate(Platform.OS === 'ios');
+    setEndDate(currentDate);
+  };
+
+  const showMode = (currentMode, isStart) => {
+    if (isStart === true) {
+      setShow(true);
+    } else {
+      setShowEndDate(true);
+    }
+
+    setMode(currentMode);
+  };
+
+  const showStartDatepicker = () => {
+    showMode('date', true);
+  };
+
+  const showStartTimepicker = () => {
+    showMode('time', true);
+  };
+
+  const showEndDatepicker = () => {
+    showMode('date', false);
+  };
+
+  const showEndTimepicker = () => {
+    showMode('time', false);
+  };
+
+  const convertDate = (value) => {
+    return value.toDateString().substring(4);
+  };
+
+  const convertTime = (value) => {
+    return value.toTimeString().substring(0, 5);
+  };
+
   return (
     <View style={styles.container}>
       {news === null && (
@@ -199,6 +267,52 @@ export default function AdminMembersListView({route, navigation}) {
                   setSelectedTitle(itemValue);
                 }}
               />
+            </View>
+            <View style={ModalStyles.formInline}>
+              <Text style={ModalStyles.modalTitle}>Start</Text>
+              <Text
+                style={ModalStyles.modalFormInlineTextHalf}
+                onPress={showStartDatepicker}>
+                {convertDate(startDate)}
+              </Text>
+              <Text
+                style={ModalStyles.modalFormInlineTextHalf}
+                onPress={showStartTimepicker}>
+                {convertTime(startDate)}
+              </Text>
+              {show && (
+                <DateTimePicker
+                  testID="dateTimePicker"
+                  value={startDate}
+                  mode={mode}
+                  is24Hour={true}
+                  display="default"
+                  onChange={onDateChange}
+                />
+              )}
+            </View>
+            <View style={ModalStyles.formInline}>
+              <Text style={ModalStyles.modalTitle}>End</Text>
+              <Text
+                style={ModalStyles.modalFormInlineTextHalf}
+                onPress={showEndDatepicker}>
+                {convertDate(endDate)}
+              </Text>
+              <Text
+                style={ModalStyles.modalFormInlineTextHalf}
+                onPress={showEndTimepicker}>
+                {convertTime(endDate)}
+              </Text>
+              {showEndDate && (
+                <DateTimePicker
+                  testID="endDateTimePicker"
+                  value={endDate}
+                  mode={mode}
+                  is24Hour={true}
+                  display="default"
+                  onChange={onEndDateChange}
+                />
+              )}
             </View>
             <View
               style={{

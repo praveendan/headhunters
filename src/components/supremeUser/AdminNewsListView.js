@@ -114,7 +114,7 @@ export default function AdminMembersListView({route, navigation}) {
         description: selectedNewsDescription,
         id: dbRef.key,
         name: selectedTitle,
-        // timestamp: new Date().getTime(),
+        timestamp: new Date().getTime(),
       })
       .then(() => {
         setSuccessMessage(AdminNewsListMessages.SAVED_SUCCESS);
@@ -139,7 +139,7 @@ export default function AdminMembersListView({route, navigation}) {
         description: selectedNewsDescription,
         name: selectedTitle,
         // id: selectedId,
-        // timestamp: new Date().getTime(),
+        timestamp: new Date().getTime(),
       })
       .then(() => {
         setSuccessMessage(AdminNewsListMessages.SAVED_SUCCESS);
