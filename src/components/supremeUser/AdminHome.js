@@ -86,35 +86,36 @@ export default function MemberHome({route, navigation}) {
             <Text style={ModalStyles.modalHeading}>Send a notification</Text>
             <View
               style={{
-                ...ModalStyles.formInline,
-                ...styles.formInline,
+                ...ModalStyles.formInlineMultiline,
               }}>
               <TextInput
                 multiline
-                style={styles.modalTextInput}
+                style={ModalStyles.modalfullWidthMultilineTextInput}
                 placeholder="Enter your message"
               />
             </View>
-            <TouchableOpacity
-              style={{
-                ...ModalStyles.basicButton,
-                ...ModalStyles.closeButton,
-                backgroundColor: Colors.highlight,
-              }}
-              onPress={() => {
-                setNotificationModalVisible(!notificationModalVisible);
-              }}>
-              <Text style={ModalStyles.textStyle}>Close</Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={{
-                ...ModalStyles.basicButton,
-                ...ModalStyles.openButton,
-                backgroundColor: Colors.dark,
-              }}
-              onPress={() => {}}>
-              <Text style={ModalStyles.textStyle}>Send</Text>
-            </TouchableOpacity>
+            <View style={ModalStyles.bottomButtonContainer}>
+              <TouchableOpacity
+                style={{
+                  ...ModalStyles.basicButtonRelative,
+                  ...ModalStyles.closeButtonRelative,
+                  backgroundColor: Colors.highlight,
+                }}
+                onPress={() => {
+                  setNotificationModalVisible(!notificationModalVisible);
+                }}>
+                <Text style={ModalStyles.textStyle}>Close</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={{
+                  ...ModalStyles.basicButtonRelative,
+                  ...ModalStyles.openButtonRelative,
+                  backgroundColor: Colors.dark,
+                }}
+                onPress={() => {}}>
+                <Text style={ModalStyles.textStyle}>Send</Text>
+              </TouchableOpacity>
+            </View>
           </View>
         </View>
       </Modal>
