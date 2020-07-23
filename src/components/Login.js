@@ -110,7 +110,6 @@ export default class Login extends React.Component {
         if (snapshot.val() === null) {
           this.clearUserId();
         } else {
-          console.log('ready nigga');
           this.setState({
             isReadyToLogin: true,
           });

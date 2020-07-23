@@ -20,9 +20,7 @@ export default function TopBar({route, navigation}) {
       await AsyncStorage.removeItem(StorageValueKeys.USER_ID);
       await AsyncStorage.removeItem(StorageValueKeys.IS_AUTHORIZED);
       auth().signOut();
-    } catch (exception) {
-      console.log('error clearing data');
-    }
+    } catch (exception) {}
   };
 
   return (

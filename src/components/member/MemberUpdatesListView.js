@@ -24,9 +24,7 @@ export default function UpdatesList({route, navigation}) {
 
   auth().onAuthStateChanged((user) => {
     if (user) {
-      console.log('user logged');
     } else {
-      console.log('hufk');
     }
   });
 
@@ -36,10 +34,6 @@ export default function UpdatesList({route, navigation}) {
       .once('value')
       .then((snapshot) => {
         setDataList(snapshot.val());
-        if (snapshot.val() === null) {
-          console.log('nodata');
-        }
-        console.log(dataList);
       });
   }, []);
 

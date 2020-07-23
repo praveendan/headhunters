@@ -17,7 +17,6 @@ const Stack = createStackNavigator();
 export default function AdminBase({route, navigation}) {
   auth().onAuthStateChanged((user) => {
     if (user) {
-      console.log('user loggeded');
     } else {
       navigation.navigate('Login');
     }
