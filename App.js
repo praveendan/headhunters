@@ -1,4 +1,4 @@
-import React, {useEffect} from 'react';
+import React, {useEffect, useState} from 'react';
 import {Alert} from 'react-native';
 import {createSwitchNavigator, createAppContainer} from 'react-navigation';
 import messaging from '@react-native-firebase/messaging';
@@ -129,14 +129,23 @@ const createTwoButtonAlert = (title, Message) =>
   );
 
 export default function App() {
+  const [currentUser, setCurrentUser] = useState('');
   useEffect(() => {
+    const user = auth().currentUser;
+
+    if (user) {
+      setCurrentUser(user.email.split('@')[0]);
+    }
+
     checkPermission();
     const unsubscribe = messaging().onMessage(async (remoteMessage) => {
       console.log('A new FCM message arrived!', JSON.stringify(remoteMessage));
-      createTwoButtonAlert(
-        remoteMessage.notification.title,
-        remoteMessage.notification.body,
-      );
+      if (remoteMessage.data.sender !== currentUser) {
+        createTwoButtonAlert(
+          remoteMessage.notification.title,
+          remoteMessage.notification.body,
+        );
+      }
     });
 
     return unsubscribe;

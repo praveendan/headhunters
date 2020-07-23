@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import {
   StyleSheet,
   Text,
@@ -8,6 +8,7 @@ import {
   TextInput,
 } from 'react-native';
 import functions from '@react-native-firebase/functions';
+import auth from '@react-native-firebase/auth';
 
 import {Colors} from '../shared/ColourSheet';
 import CommonStyles from '../shared/Common.style';
@@ -17,11 +18,21 @@ import {NotificationStatusMessages} from '../shared/Strings';
 export default function MemberHome({route, navigation}) {
   const [errorMessage, setErrorMessage] = useState('');
   const [successMessage, setSuccessMessage] = useState('');
+  const [currentUser, setCurrentUser] = useState('');
   const [notificationModalVisible, setNotificationModalVisible] = useState(
     false,
   );
 
   const [notificationMessageText, setNotificationMessageText] = useState('');
+
+  useEffect(() => {
+    const user = auth().currentUser;
+
+    if (user) {
+      setCurrentUser(user.email.split('@')[0]);
+    }
+  }, []);
+
   var openMembers = () => {
     navigation.navigate('AdminMembersListView');
   };
@@ -44,6 +55,7 @@ export default function MemberHome({route, navigation}) {
       sendNotificationMessageCall({
         text: notificationMessageText,
         region: 'global',
+        sender: currentUser,
       })
         .then(function (result) {
           setSuccessMessage(NotificationStatusMessages.SAVED_SUCCESS);
