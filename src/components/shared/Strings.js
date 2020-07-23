@@ -92,3 +92,9 @@ export const SendMessageButtonText = {
   SEND: 'Send',
   SENDING: 'Sending..',
 };
+
+export const NotificationStatusMessages = {
+  EMPTY_FIELDS_ERROR: 'Please fill up the field',
+  SAVED_SUCCESS: 'Sent successfully',
+  SAVE_ERROR: 'Error sending. Please try again later',
+};

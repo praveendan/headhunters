@@ -36,7 +36,7 @@ export default {
   },
   basicButtonRelative: {
     borderRadius: 5,
-    width: '50%',
+    width: '45%',
     padding: 10,
     elevation: 2,
   },

@@ -7,14 +7,21 @@ import {
   Modal,
   TextInput,
 } from 'react-native';
+import functions from '@react-native-firebase/functions';
+
 import {Colors} from '../shared/ColourSheet';
 import CommonStyles from '../shared/Common.style';
 import ModalStyles from '../shared/Modal.style';
+import {NotificationStatusMessages} from '../shared/Strings';
+
 export default function MemberHome({route, navigation}) {
+  const [errorMessage, setErrorMessage] = useState('');
+  const [successMessage, setSuccessMessage] = useState('');
   const [notificationModalVisible, setNotificationModalVisible] = useState(
     false,
   );
 
+  const [notificationMessageText, setNotificationMessageText] = useState('');
   var openMembers = () => {
     navigation.navigate('AdminMembersListView');
   };
@@ -25,6 +32,28 @@ export default function MemberHome({route, navigation}) {
 
   var openEvents = () => {
     navigation.navigate('AdminEventsListView');
+  };
+
+  var sendNotificationMessage = () => {
+    setSuccessMessage('');
+    setErrorMessage('');
+    if (notificationMessageText !== '') {
+      var sendNotificationMessageCall = functions().httpsCallable(
+        'sendNotificationMessage',
+      );
+      sendNotificationMessageCall({
+        text: notificationMessageText,
+        region: 'global',
+      })
+        .then(function (result) {
+          setSuccessMessage(NotificationStatusMessages.SAVED_SUCCESS);
+        })
+        .catch(function (error) {
+          setErrorMessage(NotificationStatusMessages.SAVE_ERROR);
+        });
+    } else {
+      setErrorMessage(NotificationStatusMessages.EMPTY_FIELDS_ERROR);
+    }
   };
 
   return (
@@ -92,8 +121,17 @@ export default function MemberHome({route, navigation}) {
                 multiline
                 style={ModalStyles.modalfullWidthMultilineTextInput}
                 placeholder="Enter your message"
+                onChangeText={(itemValue) => {
+                  setNotificationMessageText(itemValue);
+                }}
               />
             </View>
+            {errorMessage !== '' && (
+              <Text style={ModalStyles.errorMessage}>{errorMessage}</Text>
+            )}
+            {successMessage !== '' && (
+              <Text style={ModalStyles.successMessage}>{successMessage}</Text>
+            )}
             <View style={ModalStyles.bottomButtonContainer}>
               <TouchableOpacity
                 style={{
@@ -102,6 +140,8 @@ export default function MemberHome({route, navigation}) {
                   backgroundColor: Colors.highlight,
                 }}
                 onPress={() => {
+                  setSuccessMessage('');
+                  setErrorMessage('');
                   setNotificationModalVisible(!notificationModalVisible);
                 }}>
                 <Text style={ModalStyles.textStyle}>Close</Text>
@@ -112,7 +152,7 @@ export default function MemberHome({route, navigation}) {
                   ...ModalStyles.openButtonRelative,
                   backgroundColor: Colors.dark,
                 }}
-                onPress={() => {}}>
+                onPress={sendNotificationMessage}>
                 <Text style={ModalStyles.textStyle}>Send</Text>
               </TouchableOpacity>
             </View>
