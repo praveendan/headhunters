@@ -19,6 +19,7 @@ export default function TopBar({route, navigation}) {
     try {
       await AsyncStorage.removeItem(StorageValueKeys.USER_ID);
       await AsyncStorage.removeItem(StorageValueKeys.IS_AUTHORIZED);
+      await AsyncStorage.removeItem(StorageValueKeys.IS_AUTH_SET);
       auth().signOut();
     } catch (exception) {}
   };
