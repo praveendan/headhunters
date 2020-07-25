@@ -13,6 +13,7 @@ import {
 } from 'react-native';
 import auth from '@react-native-firebase/auth';
 import database from '@react-native-firebase/database';
+import functions from '@react-native-firebase/functions';
 import Icon from 'react-native-vector-icons/Foundation';
 import {
   Roles,
@@ -21,6 +22,7 @@ import {
   LocalizedEventsGroups,
   SaveButtonText,
   DeleteButtonText,
+  AppData,
 } from '../shared/Strings';
 import {Colors} from '../shared/ColourSheet';
 import ModalStyles from '../shared/Modal.style';
@@ -83,6 +85,7 @@ export default function AdminMembersListView({route, navigation}) {
     setErrorMessage('');
     setSuccessMessage('');
   };
+
   let createTwoButtonAlert = (username) => {
     Alert.alert(
       'Confirmation',
@@ -98,15 +101,19 @@ export default function AdminMembersListView({route, navigation}) {
       {cancelable: false},
     );
   };
+
   var deleteUser = async () => {
     setDeleteButtonText(DeleteButtonText.DELETING);
-    await database()
-      .ref('/users/' + selectedId)
-      .remove()
-      .then(() => {
+
+    var deleteUserCall = functions().httpsCallable('deleteUser');
+    deleteUserCall({
+      userId: selectedId,
+      userEmail: selectedId + AppData.USER_SUFFIX,
+    })
+      .then(function (result) {
         setSuccessMessage(AdminMemberListMessages.DELETE_SUCCESS);
       })
-      .catch((_error) => {
+      .catch(function (error) {
         setErrorMessage(AdminMemberListMessages.DELETE_ERROR);
       })
       .finally(() => {
@@ -114,6 +121,7 @@ export default function AdminMembersListView({route, navigation}) {
         clearSelectedState();
       });
   };
+
   var generateList = () => {
     if (names !== null) {
       return (

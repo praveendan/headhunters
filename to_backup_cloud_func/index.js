@@ -31,9 +31,32 @@ exports.sendNotificationMessage = functions.https.onCall((data, context) => {
             }
         }, (errorObject) => {
             console.log("The read failed: " + errorObject.code);
-            throw new functions.https.HttpsError('send-error', 'failed to read the database')
+            throw new functions.https.HttpsError('send-error', 'failed to read the database');
         }
     );
+});
+
+exports.deleteUser = functions.https.onCall((data, context) => {
+    var deleteDbEntry = function(){
+        admin.database().ref('users/' + data.userId).remove();   
+    }
+
+    admin.auth().getUserByEmail(data.userEmail)
+    .then((userRecord) => {
+        // See the UserRecord reference doc for the contents of userRecord.
+        console.log('Successfully fetched user data:', userRecord);
+        if(userRecord.uid !== null){
+            admin.auth().deleteUser(userRecord.uid);
+            deleteDbEntry();
+        }
+        return;
+    })
+    .catch((error) => {
+        //re-add the user to delete
+        console.log('Error fetching user data:', error);
+        throw new functions.https.HttpsError('send-error', 'failed to read the database');
+    });
+});
 
 
 });
