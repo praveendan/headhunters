@@ -75,6 +75,7 @@ export default class Login extends React.Component {
         this.state.userKey,
       )
       .then(() => {
+        AsyncStorage.setItem(StorageValueKeys.IS_AUTH_SET, 'true');
         if (this.state.compareUser.user_role === Roles.MEMBER) {
           this.props.navigation.navigate('MemberBase');
         } else if (this.state.compareUser.user_role === Roles.SUPREME_USER) {
@@ -84,6 +85,7 @@ export default class Login extends React.Component {
       .catch((error) => {
         //return error.code;
         if (error.code === 'auth/email-already-in-use') {
+          AsyncStorage.setItem(StorageValueKeys.IS_AUTH_SET, 'true');
           this.login();
         } else {
           this.setState({

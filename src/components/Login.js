@@ -8,7 +8,6 @@ import {
   TouchableOpacity,
   ActivityIndicator,
 } from 'react-native';
-
 import {Colors} from './shared/ColourSheet';
 import {
   Roles,
@@ -30,21 +29,17 @@ export default class Login extends React.Component {
     isReadyToLogin: false,
     isButtonDisabled: false,
   };
-
   componentDidMount() {
     this.checkUser();
   }
-
   checkUser = async () => {
     try {
       this.state.storedAuthenticationStatus = await AsyncStorage.getItem(
         StorageValueKeys.IS_AUTHORIZED,
       );
-
       this.state.storedUserId = await AsyncStorage.getItem(
         StorageValueKeys.USER_ID,
       );
-
       if (this.state.storedAuthenticationStatus === null) {
         this.props.navigation.navigate('Startup');
       } else if (this.state.storedUserId === null) {
@@ -56,7 +51,6 @@ export default class Login extends React.Component {
       this.props.navigation.navigate('Setup');
     }
   };
-
   handleLogin = () => {
     this.setState({
       errorMessage: null,
@@ -100,7 +94,6 @@ export default class Login extends React.Component {
       });
     }
   };
-
   roleChecker = () => {
     database()
       .ref('users/' + this.state.storedUserId)
@@ -116,7 +109,6 @@ export default class Login extends React.Component {
         }
       });
   };
-
   clearUserId = async () => {
     try {
       await AsyncStorage.removeItem(StorageValueKeys.USER_ID);
@@ -127,7 +119,6 @@ export default class Login extends React.Component {
       });
     }
   };
-
   renderLoginButton = () => {
     if (this.state.isReadyToLogin === true) {
       return (

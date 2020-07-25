@@ -14,8 +14,13 @@ export default class Loading extends Component {
       const isAuthorized = await AsyncStorage.getItem(
         StorageValueKeys.IS_AUTHORIZED,
       );
-      if (isAuthorized !== null) {
+      const isAuthenticationSet = await AsyncStorage.getItem(
+        StorageValueKeys.IS_AUTH_SET,
+      );
+      if (isAuthorized !== null && isAuthenticationSet !== null) {
         this.props.navigation.navigate('Login');
+      } else if (isAuthorized !== null) {
+        this.props.navigation.navigate('Setup');
       } else {
         this.props.navigation.navigate('Startup');
       }

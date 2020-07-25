@@ -28,6 +28,7 @@ export const Constants = {
 export const StorageValueKeys = {
   USER_ID: 'userId',
   IS_AUTHORIZED: 'isAuthorized',
+  IS_AUTH_SET: 'isAuthernticationSet',
 };
 
 export const StartupMessages = {
