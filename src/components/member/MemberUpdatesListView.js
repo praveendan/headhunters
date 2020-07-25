@@ -50,29 +50,36 @@ export default function UpdatesList({route, navigation}) {
     }
   };
 
+  var convertDateString = (timeStamp) => {
+    return new Date(timeStamp).toDateString();
+  };
+
   var generateList = () => {
     if (dataList !== null) {
+      return <ScrollView>{generateListItems()}</ScrollView>;
+    }
+  };
+
+  var generateListItems = () => {
+    for (let key in dataList) {
+      let item = dataList[key];
       return (
-        <ScrollView>
-          {dataList.map((item, index) => (
-            <TouchableOpacity
-              key={item.id}
-              style={styles.itemContainer}
-              onPress={() => {
-                showModal(item);
-              }}>
-              <Text style={styles.itemTitle}>{item.name}</Text>
-              <View style={styles.itemExcerpt}>
-                <Text style={styles.itemExcerptTextDate}>
-                  Date: {item.date}
-                </Text>
-                <Text style={styles.itemExcerptText}>
-                  {getExcerpt(item.description)}
-                </Text>
-              </View>
-            </TouchableOpacity>
-          ))}
-        </ScrollView>
+        <TouchableOpacity
+          key={item.id}
+          style={styles.itemContainer}
+          onPress={() => {
+            showModal(item);
+          }}>
+          <Text style={styles.itemTitle}>{item.name}</Text>
+          <View style={styles.itemExcerpt}>
+            <Text style={styles.itemExcerptTextDate}>
+              {convertDateString(item.timestamp)}
+            </Text>
+            <Text style={styles.itemExcerptText}>
+              {getExcerpt(item.description)}
+            </Text>
+          </View>
+        </TouchableOpacity>
       );
     }
   };
@@ -80,6 +87,41 @@ export default function UpdatesList({route, navigation}) {
   var generateActivityIndicator = () => {
     if (dataList === null) {
       return <ActivityIndicator size="large" color={Colors.highlight} />;
+    }
+  };
+
+  const convertDate = (value) => {
+    return new Date(value).toDateString().substring(4);
+  };
+
+  const convertTime = (value) => {
+    return new Date(value).toTimeString().substring(0, 5);
+  };
+
+  var generateEventDates = (val) => {
+    if (subType === MemberItemType.EVENTS) {
+      return (
+        <View>
+          <View style={ModalStyles.formInline}>
+            <Text style={ModalStyles.modalTitle}>Start Date :</Text>
+            <Text style={ModalStyles.modalFormInlineTextHalf}>
+              {convertDate(val.start_date)}
+            </Text>
+            <Text style={ModalStyles.modalFormInlineTextHalf}>
+              {convertTime(val.start_date)}
+            </Text>
+          </View>
+          <View style={ModalStyles.formInline}>
+            <Text style={ModalStyles.modalTitle}>End Date :</Text>
+            <Text style={ModalStyles.modalFormInlineTextHalf}>
+              {convertDate(val.end_date)}
+            </Text>
+            <Text style={ModalStyles.modalFormInlineTextHalf}>
+              {convertTime(val.end_date)}
+            </Text>
+          </View>
+        </View>
+      );
     }
   };
 
@@ -94,17 +136,9 @@ export default function UpdatesList({route, navigation}) {
         onRequestClose={() => {}}>
         <View style={ModalStyles.centeredView}>
           <View style={ModalStyles.modalView}>
-            <Text style={ModalStyles.modalHeading}>Details</Text>
-            <View style={ModalStyles.formInline}>
-              <Text style={ModalStyles.modalTitle}>Date :</Text>
-              <Text
-                style={{
-                  ...ModalStyles.modalTextInput,
-                  ...styles.modalTextInput,
-                }}>
-                {modalText.date}
-              </Text>
-            </View>
+            <Text style={ModalStyles.modalHeading}>{modalText.name}</Text>
+            {generateEventDates(modalText)}
+
             <Text style={ModalStyles.modalText}>{modalText.description}</Text>
             <TouchableOpacity
               style={{
