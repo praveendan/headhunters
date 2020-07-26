@@ -10,24 +10,19 @@ import {
 } from 'react-native';
 import database from '@react-native-firebase/database';
 import auth from '@react-native-firebase/auth';
-
 import {Colors} from '../shared/ColourSheet';
 import ModalStyles from '../shared/Modal.style';
 import {MemberItemType, LocalizedEventsGroups} from '../shared/Strings';
-
 export default function UpdatesList({route, navigation}) {
   const {subType} = route.params;
   const [modalVisible, setModalVisible] = useState(false);
   const [modalText, setModalText] = useState('dummy');
-
   const [dataList, setDataList] = useState(null);
-
   auth().onAuthStateChanged((user) => {
     if (user) {
     } else {
     }
   });
-
   useEffect(() => {
     database()
       .ref(subType + '/' + LocalizedEventsGroups.GLOBAL + '/')
@@ -36,12 +31,10 @@ export default function UpdatesList({route, navigation}) {
         setDataList(snapshot.val());
       });
   }, []);
-
   var showModal = (item) => {
     setModalText(item);
     setModalVisible(true);
   };
-
   var getExcerpt = (string) => {
     if (string.length > 100) {
       return string.substring(0, 100) + '...  Read more';
@@ -49,37 +42,36 @@ export default function UpdatesList({route, navigation}) {
       return string;
     }
   };
-
   var convertDateString = (timeStamp) => {
     return new Date(timeStamp).toDateString();
   };
-
   var generateList = () => {
     if (dataList !== null) {
-      return <ScrollView>{generateListItems()}</ScrollView>;
-    }
-  };
-
-  var generateListItems = () => {
-    for (let key in dataList) {
-      let item = dataList[key];
       return (
-        <TouchableOpacity
-          key={item.id}
-          style={styles.itemContainer}
-          onPress={() => {
-            showModal(item);
-          }}>
-          <Text style={styles.itemTitle}>{item.name}</Text>
-          <View style={styles.itemExcerpt}>
-            <Text style={styles.itemExcerptTextDate}>
-              {convertDateString(item.timestamp)}
-            </Text>
-            <Text style={styles.itemExcerptText}>
-              {getExcerpt(item.description)}
-            </Text>
-          </View>
-        </TouchableOpacity>
+        <ScrollView>
+          {Object.keys(dataList).map((key, index) => {
+            if (dataList[key] !== null) {
+              return (
+                <TouchableOpacity
+                  key={dataList[key].id}
+                  style={styles.itemContainer}
+                  onPress={() => {
+                    showModal(dataList[key]);
+                  }}>
+                  <Text style={styles.itemTitle}>{dataList[key].name}</Text>
+                  <View style={styles.itemExcerpt}>
+                    <Text style={styles.itemExcerptTextDate}>
+                      {convertDateString(dataList[key].timestamp)}
+                    </Text>
+                    <Text style={styles.itemExcerptText}>
+                      {getExcerpt(dataList[key].description)}
+                    </Text>
+                  </View>
+                </TouchableOpacity>
+              );
+            }
+          })}
+        </ScrollView>
       );
     }
   };
@@ -89,15 +81,12 @@ export default function UpdatesList({route, navigation}) {
       return <ActivityIndicator size="large" color={Colors.highlight} />;
     }
   };
-
   const convertDate = (value) => {
     return new Date(value).toDateString().substring(4);
   };
-
   const convertTime = (value) => {
     return new Date(value).toTimeString().substring(0, 5);
   };
-
   var generateEventDates = (val) => {
     if (subType === MemberItemType.EVENTS) {
       return (
@@ -124,7 +113,6 @@ export default function UpdatesList({route, navigation}) {
       );
     }
   };
-
   return (
     <View style={styles.container}>
       {generateActivityIndicator()}
@@ -138,7 +126,6 @@ export default function UpdatesList({route, navigation}) {
           <View style={ModalStyles.modalView}>
             <Text style={ModalStyles.modalHeading}>{modalText.name}</Text>
             {generateEventDates(modalText)}
-
             <Text style={ModalStyles.modalText}>{modalText.description}</Text>
             <TouchableOpacity
               style={{

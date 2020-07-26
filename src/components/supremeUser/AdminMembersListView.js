@@ -56,10 +56,10 @@ export default function AdminMembersListView({route, navigation}) {
     database()
       .ref('users/')
       .on('value', (snapshot) => {
-        setNames(snapshot.val());
         if (snapshot.val() === null) {
           //   this.clearUserId();
         } else {
+          setNames(snapshot.val());
         }
       });
   };
@@ -126,19 +126,21 @@ export default function AdminMembersListView({route, navigation}) {
     if (names !== null) {
       return (
         <ScrollView>
-          {names.map((item, index) => {
-            if (item !== null) {
+          {Object.keys(names).map((key, index) => {
+            if (names[key] !== null) {
               return (
                 <TouchableOpacity
-                  key={item.user_id}
+                  key={names[key].user_id}
                   style={styles.itemContainer}
                   onPress={() => {
-                    showModal(item);
+                    showModal(names[key]);
                   }}>
                   <Text style={styles.itemTitle}>
-                    User name: {item.user_name}
+                    User name: {names[key].user_name}
                   </Text>
-                  <Text style={styles.itemExcerpt}>Role: {item.user_role}</Text>
+                  <Text style={styles.itemExcerpt}>
+                    Role: {names[key].user_role}
+                  </Text>
                 </TouchableOpacity>
               );
             }
@@ -147,6 +149,7 @@ export default function AdminMembersListView({route, navigation}) {
       );
     }
   };
+
   var generateRolePicker = (userInfo) => {
     if (currentUserId !== modalData.user_id) {
       return (

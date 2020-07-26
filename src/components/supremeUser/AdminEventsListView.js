@@ -55,14 +55,7 @@ export default function AdminMembersListView({route, navigation}) {
         if (snapshot.val() === null) {
           //   this.clearUserId();
         } else {
-          let tempArray = [];
-          let newsCount = 0;
-          for (const [_key, value] of Object.entries(snapshot.val())) {
-            tempArray.push(value);
-            newsCount++;
-          }
-          setNumberOfNews(newsCount);
-          setNews(tempArray);
+          setNews(snapshot.val());
         }
       });
   };
@@ -176,18 +169,18 @@ export default function AdminMembersListView({route, navigation}) {
     if (news !== null) {
       return (
         <ScrollView>
-          {news.map((item, index) => {
-            if (item !== null) {
+          {Object.keys(news).map((key, index) => {
+            if (news[key] !== null) {
               return (
                 <TouchableOpacity
-                  key={item.id}
+                  key={news[key].id}
                   style={styles.itemContainer}
                   onPress={() => {
-                    showModal(item);
+                    showModal(news[key]);
                   }}>
-                  <Text style={styles.itemTitle}>{item.name}</Text>
+                  <Text style={styles.itemTitle}>{news[key].name}</Text>
                   <Text style={styles.itemExcerpt}>
-                    {getExcerpt(item.description)}
+                    {getExcerpt(news[key].description)}
                   </Text>
                 </TouchableOpacity>
               );
