@@ -97,22 +97,22 @@ export default function UpdatesList({route, navigation}) {
   var generateEventDates = (val) => {
     if (subType === MemberItemType.EVENTS) {
       return (
-        <View>
+        <View style={{width: '100%'}}>
           <View style={ModalStyles.formInline}>
             <Text style={ModalStyles.modalTitle}>Start Date :</Text>
-            <Text style={ModalStyles.modalFormInlineTextHalf}>
+            <Text style={ModalStyles.modalFormInlineTextDate}>
               {convertDate(val.start_date)}
             </Text>
-            <Text style={ModalStyles.modalFormInlineTextHalf}>
+            <Text style={ModalStyles.modalFormInlineTextTime}>
               {convertTime(val.start_date)}
             </Text>
           </View>
           <View style={ModalStyles.formInline}>
             <Text style={ModalStyles.modalTitle}>End Date :</Text>
-            <Text style={ModalStyles.modalFormInlineTextHalf}>
+            <Text style={ModalStyles.modalFormInlineTextDate}>
               {convertDate(val.end_date)}
             </Text>
-            <Text style={ModalStyles.modalFormInlineTextHalf}>
+            <Text style={ModalStyles.modalFormInlineTextTime}>
               {convertTime(val.end_date)}
             </Text>
           </View>

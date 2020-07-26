@@ -99,6 +99,17 @@ export default {
     marginTop: 10,
     fontSize: 20,
   },
+  modalFormInlineTextDate: {
+    flex: 1,
+    height: 50,
+    marginTop: 10,
+    fontSize: 20,
+  },
+  modalFormInlineTextTime: {
+    height: 50,
+    marginTop: 10,
+    fontSize: 20,
+  },
   modalFormInlineTextHalf: {
     width: '30%',
     height: 50,

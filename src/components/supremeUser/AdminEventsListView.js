@@ -266,12 +266,12 @@ export default function AdminMembersListView({route, navigation}) {
             <View style={ModalStyles.formInline}>
               <Text style={ModalStyles.modalTitle}>Start</Text>
               <Text
-                style={ModalStyles.modalFormInlineTextHalf}
+                style={ModalStyles.modalFormInlineTextDate}
                 onPress={showStartDatepicker}>
                 {convertDate(startDate)}
               </Text>
               <Text
-                style={ModalStyles.modalFormInlineTextHalf}
+                style={ModalStyles.modalFormInlineTextTime}
                 onPress={showStartTimepicker}>
                 {convertTime(startDate)}
               </Text>
@@ -281,7 +281,7 @@ export default function AdminMembersListView({route, navigation}) {
                   value={startDate}
                   mode={mode}
                   is24Hour={true}
-                  display="default"
+                  display="spinner"
                   onChange={onDateChange}
                 />
               )}
@@ -289,12 +289,12 @@ export default function AdminMembersListView({route, navigation}) {
             <View style={ModalStyles.formInline}>
               <Text style={ModalStyles.modalTitle}>End</Text>
               <Text
-                style={ModalStyles.modalFormInlineTextHalf}
+                style={ModalStyles.modalFormInlineTextDate}
                 onPress={showEndDatepicker}>
                 {convertDate(endDate)}
               </Text>
               <Text
-                style={ModalStyles.modalFormInlineTextHalf}
+                style={ModalStyles.modalFormInlineTextTime}
                 onPress={showEndTimepicker}>
                 {convertTime(endDate)}
               </Text>
@@ -304,7 +304,7 @@ export default function AdminMembersListView({route, navigation}) {
                   value={endDate}
                   mode={mode}
                   is24Hour={true}
-                  display="default"
+                  display="spinner"
                   onChange={onEndDateChange}
                 />
               )}
