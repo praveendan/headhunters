@@ -230,7 +230,9 @@ export default function AdminMembersListView({route, navigation}) {
   };
 
   const convertDate = (value) => {
-    return value.toDateString().substring(4);
+    return (
+      value.getDate() + '/' + (value.getMonth() + 1) + '/' + value.getFullYear()
+    );
   };
 
   const convertTime = (value) => {

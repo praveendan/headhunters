@@ -43,7 +43,7 @@ export default function UpdatesList({route, navigation}) {
     }
   };
   var convertDateString = (timeStamp) => {
-    return new Date(timeStamp).toDateString();
+    return 'Created on: ' + new Date(timeStamp).toDateString();
   };
   var generateList = () => {
     if (dataList !== null) {
@@ -82,7 +82,14 @@ export default function UpdatesList({route, navigation}) {
     }
   };
   const convertDate = (value) => {
-    return new Date(value).toDateString().substring(4);
+    let dateObj = new Date(value);
+    return (
+      dateObj.getDate() +
+      '/' +
+      (dateObj.getMonth() + 1) +
+      '/' +
+      dateObj.getFullYear()
+    );
   };
   const convertTime = (value) => {
     return new Date(value).toTimeString().substring(0, 5);
