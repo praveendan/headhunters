@@ -107,8 +107,8 @@ export default function AdminMembersListView({route, navigation}) {
 
     var deleteUserCall = functions().httpsCallable('deleteUser');
     deleteUserCall({
-      userId: selectedId,
-      userEmail: selectedId + AppData.USER_SUFFIX,
+      user_id: selectedId,
+      //userEmail: selectedId + AppData.USER_SUFFIX,
     })
       .then(function (result) {
         setSuccessMessage(AdminMemberListMessages.DELETE_SUCCESS);
@@ -208,33 +208,20 @@ export default function AdminMembersListView({route, navigation}) {
       setErrorMessage(AdminMemberListMessages.MEMBER_KEY_LENGTH_ERROR);
     } else {
       setSaveButtonText(SaveButtonText.SAVING);
-      database()
-        .ref('users/' + selectedId)
-        .once('value')
-        .then((snapshot) => {
-          if (snapshot.val() !== null) {
-            setErrorMessage(AdminMemberListMessages.MEMBER_ID_EXISTS_ERROR);
-          } else {
-            const newReference = database().ref('/users');
-            newReference
-              .child(selectedId)
-              .set({
-                region: LocalizedEventsGroups.GLOBAL,
-                user_id: selectedId,
-                user_key: selectedKey,
-                user_name: selectedName,
-                user_role: selectedRole,
-              })
-              .then(() => {
-                setSuccessMessage(AdminMemberListMessages.SAVED_SUCCESS);
-              })
-              .catch((error) => {})
-              .finally(() => {
-                setSaveButtonText(SaveButtonText.SAVE);
-              });
-          }
+
+      var addUserCall = functions().httpsCallable('addUser');
+      addUserCall({
+        region: LocalizedEventsGroups.GLOBAL,
+        user_id: selectedId,
+        user_key: selectedKey,
+        user_name: selectedName,
+        user_role: selectedRole,
+        user_email: selectedId + AppData.USER_SUFFIX,
+      })
+        .then(function (_result) {
+          setSuccessMessage(AdminMemberListMessages.SAVED_SUCCESS);
         })
-        .catch((error) => {})
+        .catch(function (_error) {})
         .finally(() => {
           setSaveButtonText(SaveButtonText.SAVE);
         });
@@ -380,6 +367,10 @@ export default function AdminMembersListView({route, navigation}) {
                   setSelectedName(itemValue);
                 }}
               />
+            </View>
+            <View style={ModalStyles.formInline}>
+              <Text style={ModalStyles.modalTitle}>Id</Text>
+              <Text style={ModalStyles.modalFormInlineText}>{selectedId}</Text>
             </View>
             <View style={ModalStyles.formInline}>
               <Text style={ModalStyles.modalTitle}>Key</Text>
