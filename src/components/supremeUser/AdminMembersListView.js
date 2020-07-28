@@ -105,12 +105,10 @@ export default function AdminMembersListView({route, navigation}) {
   var deleteUser = async () => {
     setDeleteButtonText(DeleteButtonText.DELETING);
 
-    var deleteUserCall = functions().httpsCallable('deleteUser');
-    deleteUserCall({
-      user_id: selectedId,
-      //userEmail: selectedId + AppData.USER_SUFFIX,
-    })
-      .then(function (result) {
+    await database()
+      .ref('/users/' + selectedId)
+      .remove()
+      .then(() => {
         setSuccessMessage(AdminMemberListMessages.DELETE_SUCCESS);
       })
       .catch(function (error) {
@@ -209,21 +207,33 @@ export default function AdminMembersListView({route, navigation}) {
     } else {
       setSaveButtonText(SaveButtonText.SAVING);
 
-      var addUserCall = functions().httpsCallable('addUser');
-      addUserCall({
-        region: LocalizedEventsGroups.GLOBAL,
-        user_id: selectedId,
-        user_key: selectedKey,
-        user_name: selectedName,
-        user_role: selectedRole,
-        user_email: selectedId + AppData.USER_SUFFIX,
-      })
-        .then(function (_result) {
-          setSuccessMessage(AdminMemberListMessages.SAVED_SUCCESS);
-        })
-        .catch(function (_error) {})
-        .finally(() => {
-          setSaveButtonText(SaveButtonText.SAVE);
+      database()
+        .ref('users/' + selectedId)
+        .once('value')
+        .then((snapshot) => {
+          if (snapshot.val() !== null) {
+            setErrorMessage(AdminMemberListMessages.MEMBER_ID_EXISTS_ERROR);
+          } else {
+            const newReference = database().ref('/users');
+            newReference
+              .child(selectedId)
+              .set({
+                region: LocalizedEventsGroups.GLOBAL,
+                user_id: selectedId,
+                user_key: selectedKey,
+                user_name: selectedName,
+                user_role: selectedRole,
+              })
+              .then(() => {
+                setSuccessMessage(AdminMemberListMessages.SAVED_SUCCESS);
+              })
+              .catch((error) => {
+                setErrorMessage(AdminMemberListMessages.SAVE_ERROR);
+              })
+              .finally(() => {
+                setSaveButtonText(SaveButtonText.SAVE);
+              });
+          }
         });
     }
   };

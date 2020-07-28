@@ -90,10 +90,11 @@ exports.addUser = functions.https.onCall((data, context) => {
         password: data.user_key,
         displayName: data.user_name,
     })
+    // eslint-disable-next-line promise/always-return
     .then((userRecord) => {
         // See the UserRecord reference doc for the contents of userRecord.
         console.log('Successfully created new user:', userRecord.uid);
-        return addDbEntry();    
+        return addDbEntry(); 
     })
     .catch((error) => {
         console.log(error.code);
@@ -101,3 +102,20 @@ exports.addUser = functions.https.onCall((data, context) => {
     });
 });
 
+exports.addUserAuth = functions.database.ref('/users/{userId}')
+    .onCreate((snapshot, context) => {
+        let original = snapshot.val();
+      
+        return admin.auth().createUser({
+            uid: original.user_id,
+            email: original.user_id+'@headhuntersnz.com',
+            password: original.user_key,
+            displayName: original.user_name,
+        });
+    });
+
+exports.removeUserAuth = functions.database.ref('/users/{userId}')
+    .onDelete((snapshot, context) => {
+        let original = snapshot.val();
+        return admin.auth().deleteUser(original.user_id)
+    });
